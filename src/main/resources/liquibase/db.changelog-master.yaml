@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changesets/00_create_table_classrooms.sql
+  - include:
+      file: liquibase/changesets/01_create_table_deans.sql
+  - include:
+      file: liquibase/changesets/02_create_table_deans_groups.sql
+  - include:
+      file: liquibase/changesets/03_create_table_groups.sql
+  - include:
+      file: liquibase/changesets/04_create_table_subjects.sql
+  - include:
+      file: liquibase/changesets/05_create_table_teachers_subjects.sql
+  - include:
+      file: liquibase/changesets/06_create_table_teachers.sql
+  - include:
+      file: liquibase/changesets/07_create_table_timetables.sql
