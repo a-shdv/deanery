@@ -8,10 +8,14 @@ databaseChangeLog:
   - include:
       file: liquibase/changesets/03_create_table_groups.sql
   - include:
-      file: liquibase/changesets/04_create_table_subjects.sql
+      file: liquibase/changesets/04_create_table_roles.sql
   - include:
-      file: liquibase/changesets/05_create_table_teachers_subjects.sql
+      file: liquibase/changesets/05_create_table_subjects.sql
   - include:
       file: liquibase/changesets/06_create_table_teachers.sql
   - include:
-      file: liquibase/changesets/07_create_table_timetables.sql
+      file: liquibase/changesets/07_create_table_teachers_subjects.sql
+  - include:
+      file: liquibase/changesets/08_create_table_timetables.sql
+  - include:
+      file: liquibase/changesets/09_create_table_deans_roles.sql
