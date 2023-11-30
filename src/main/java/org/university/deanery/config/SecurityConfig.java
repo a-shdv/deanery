@@ -22,8 +22,8 @@ public class SecurityConfig  {
                                 .requestMatchers(new AntPathRequestMatcher("/sign-in")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/sign-up")).permitAll()
                                 .anyRequest().authenticated()
-                ).formLogin(
-                        form -> form
+                ).formLogin(form ->
+                        form
                                 .loginPage("/sign-in")
                                 .loginProcessingUrl("/sign-in")
                                 .defaultSuccessUrl("/")

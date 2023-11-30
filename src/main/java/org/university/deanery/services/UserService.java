@@ -17,8 +17,12 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        return userRepository.findUserByUsername(username);
     }
 }
