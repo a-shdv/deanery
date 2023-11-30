@@ -2,9 +2,9 @@ databaseChangeLog:
   - include:
       file: liquibase/changesets/00_create_table_classrooms.sql
   - include:
-      file: liquibase/changesets/01_create_table_deans.sql
+      file: liquibase/changesets/01_create_table_users.sql
   - include:
-      file: liquibase/changesets/02_create_table_deans_groups.sql
+      file: liquibase/changesets/02_create_table_users_groups.sql
   - include:
       file: liquibase/changesets/03_create_table_groups.sql
   - include:
@@ -18,4 +18,4 @@ databaseChangeLog:
   - include:
       file: liquibase/changesets/08_create_table_timetables.sql
   - include:
-      file: liquibase/changesets/09_create_table_deans_roles.sql
+      file: liquibase/changesets/09_create_table_users_roles.sql

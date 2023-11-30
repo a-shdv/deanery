@@ -12,12 +12,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "deans")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Dean implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,8 +33,8 @@ public class Dean implements UserDetails {
 
     @ManyToMany
     @JoinTable(
-            name = "deans_roles",
-            joinColumns = @JoinColumn(name = "dean_id", referencedColumnName = "id"),
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 

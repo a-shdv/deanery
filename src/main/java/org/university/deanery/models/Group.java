@@ -20,7 +20,7 @@ public class Group {
     private String title;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "dean_id")
-    private Dean dean;
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
