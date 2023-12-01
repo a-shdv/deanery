@@ -6,7 +6,23 @@
 </head>
 <body>
     <h2>Главная</h2>
-    <a th:href="@{/sign-in}">Войти</a>    |
-    <a th:href="@{/sign-up}">Зарегистрироваться</a>
+    <div sec:authorize="isAnonymous()">
+        <header>
+            <ul>
+                <li><a th:href="@{/sign-in}">Войти</a></li>
+                <li><a th:href="@{/sign-up}">Зарегистрироваться</a></li>
+            </ul>
+        </header>
+    </div>
+
+    <main>
+        <div sec:authorize="isAuthenticated()">
+            <span th:text="'Добро пожаловать ' + ${#authentication.getName()} + '!'"></span> <br>
+            <form th:action="@{/logout}" method="post">
+                <br>
+                <input type="submit" value="Выйти"/>
+            </form>
+        </div>
+    </main>
 </body>
 </html>
