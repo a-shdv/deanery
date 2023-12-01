@@ -10,7 +10,6 @@ import org.university.deanery.exceptions.ClassroomNotFoundException;
 import org.university.deanery.models.Classroom;
 import org.university.deanery.services.ClassroomService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -43,32 +42,48 @@ public class ClassroomController {
     }
 
     @PostMapping
-    public String saveClassroom(@ModelAttribute("saveClassroomDto") SaveClassroomDto saveClassroomDto, Model model) {
+    public String save(@ModelAttribute("saveClassroomDto") SaveClassroomDto saveClassroomDto, Model model) {
         Optional<Classroom> classroom = classroomService.findClassroomByClassroomNo(saveClassroomDto.getClassroomNo());
         String message;
-            try {
-                if (classroom.isPresent())
-                    throw new ClassroomNoAlreadyExistsException();
-                classroomService.saveClassroom(SaveClassroomDto.toClassroom(saveClassroomDto));
-            } catch (ClassroomNoAlreadyExistsException e) {
-                message = "Аудитория №" + saveClassroomDto.classroomNo() + " уже существует!";
-                model.addAttribute("error", message);
-            }
+        try {
+            if (classroom.isPresent())
+                throw new ClassroomNoAlreadyExistsException();
+            classroomService.saveClassroom(SaveClassroomDto.toClassroom(saveClassroomDto));
+            message = "Аудитория №" + saveClassroomDto.getClassroomNo() + " успешно создана!";
+            model.addAttribute("success", message);
+            model.addAttribute("classrooms", classroomService.findAll());
+        } catch (ClassroomNoAlreadyExistsException e) {
+            message = "Аудитория №" + saveClassroomDto.classroomNo() + " уже существует!";
+            model.addAttribute("error", message);
+            model.addAttribute("classrooms", classroomService.findAll());
+        }
 
-        return "redirect:/classrooms";
+        return "classrooms/find-all";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     public String updateById(@PathVariable Long id, @ModelAttribute("saveClassroomDto") SaveClassroomDto saveClassroomDto, Model model) {
         String message;
         try {
             Optional<Classroom> classroom = Optional.ofNullable(classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new));
+            classroom = Optional.of(SaveClassroomDto.toClassroom(saveClassroomDto));
+            if (classroomService.findClassroomByClassroomNo(saveClassroomDto.classroomNo()).isPresent())
+                throw new ClassroomNoAlreadyExistsException();
 
-//            SaveClassroomDto.toClassroom(saveClassroomDto);
+            classroomService.saveClassroom(classroom.get());
+            message = "Аудитория успешно обновлена!";
+            model.addAttribute("success", message);
+            model.addAttribute("classrooms", classroomService.findAll());
         } catch (ClassroomNotFoundException e) {
             message = "Аудитория №" + id + " не найдена!";
             model.addAttribute("error", message);
+            model.addAttribute("classrooms", classroomService.findAll());
+            return "classrooms/find-all";
+        } catch (ClassroomNoAlreadyExistsException e) {
+            message = "Аудитория №" + saveClassroomDto.getClassroomNo() + " уже существует!";
+            model.addAttribute("error", message);
+            model.addAttribute("classrooms", classroomService.findAll());
         }
-        return "";
+        return "classrooms/find-all";
     }
 }

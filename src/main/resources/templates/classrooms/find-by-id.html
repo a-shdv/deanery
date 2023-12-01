@@ -9,13 +9,14 @@
 </head>
 <body>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
+    <div th:if="${success}" th:text="${success}" style="color: green"></div>
     <div th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.get().classroomNo}"></div>
     <br>
     <table>
-        <form th:action="@{/classrooms/{id}(id=${})" method="post" th:object="${saveClassroomDto}">
+        <form th:action="@{/classrooms/{id}(id=${classroom.get().getId()})}" method="post" th:object="${saveClassroomDto}">
             <!--Номер аудитории-->
             <tr>
-                <td><label for="classroomNo">Номер аудитории</label></td>
+                <td><label for="classroomNo">Новый номер аудитории</label></td>
                 <td><input type="number" id="classroomNo" name="classroomNo"></td>
             </tr>
             <!--Обновить-->
