@@ -37,27 +37,33 @@ public class UserController {
         String message = "";
         model.asMap().clear();
         try {
+            if (userService.findUserByEmail(signUpDto.getEmail()) != null)
+                throw new UserEmailAlreadyExistsException();
             if (user != null)
-                throw new UserAlreadyExistsException();
+                throw new UserUsernameAlreadyExistsException();
             if (!signUpDto.getPassword().equals(signUpDto.getPasswordConfirm()))
                 throw new PasswordsMismatchException();
+            if (signUpDto.getPassword().length() < UserService.passwordLength)
+                throw new PasswordLengthException();
             userService.saveUser(SignUpDto.toUser(signUpDto));
             message = "Пользователь " + signUpDto.getUsername() + " успешно создан!";
             model.addAttribute("success", message);
-        } catch (UserAlreadyExistsException ex) {
+        } catch (UserUsernameAlreadyExistsException e) {
             message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
             model.addAttribute("error", message);
             return "sign-up";
-        } catch (PasswordsMismatchException ex) {
+        } catch (PasswordsMismatchException e) {
             message = "Пароли не совпадают!";
             model.addAttribute("error", message);
             return "sign-up";
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
             model.addAttribute("error", message);
-        } catch (PasswordRegexpException e) {
-            message = "Пароль должен содержать строчные, прописные буквы, а также цифры!";
+            return "sign-up";
+        } catch (UserEmailAlreadyExistsException e) {
+            message = "Пользователь с электронной почтой " + signUpDto.getEmail() + " уже существует!";
             model.addAttribute("error", message);
+            return "sign-up";
         }
 
         return "sign-in";
@@ -73,29 +79,33 @@ public class UserController {
         String message;
         try {
             User user = userService.findUserByEmail(changePasswordDto.getEmail());
-            if (!changePasswordDto.passwordOld().equals(changePasswordDto.passwordConfirm()))
-                throw new PasswordsMismatchException();
+            if (userService.findUserByEmail(changePasswordDto.getEmail()) == null)
+                throw new UserEmailNotExistsException();
+            if (user == null)
+                throw new UserUsernameNotExistsException();
             if (changePasswordDto.passwordOld().equals(changePasswordDto.passwordNew()))
                 throw new PasswordMustBeNewException();
-            if (user == null)
-                throw new UserNotExistsException();
+            if (!changePasswordDto.passwordNew().equals(changePasswordDto.passwordConfirm()))
+                throw new PasswordsMismatchException();
+            if (changePasswordDto.getPasswordNew().length() < UserService.passwordLength)
+                throw new PasswordLengthException();
             userService.changeUserPassword(user, changePasswordDto.getPasswordNew());
             message = "Пароль успешно изменен!";
             model.addAttribute("success", message);
+        } catch (UserEmailNotExistsException e) {
+            message = "Пользователь с электронной почтой " + changePasswordDto.email() + " не найден!";
+            model.addAttribute("error", message);
+        } catch (UserUsernameNotExistsException e) {
+            message = "Пользователь с именем " + changePasswordDto.username() + " не найден!";
+            model.addAttribute("error", message);
         } catch (PasswordsMismatchException ex) {
             message = "Пароли не совпадают!";
-            model.addAttribute("error", message);
-        } catch (UserNotExistsException e) {
-            message = "Пользователь с таким именем или электронной почтой не найден!";
             model.addAttribute("error", message);
         } catch (PasswordMustBeNewException e) {
             message = "Новый пароль не может быть таким же, как старый!";
             model.addAttribute("error", message);
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
-            model.addAttribute("error", message);
-        } catch (PasswordRegexpException e) {
-            message = "Пароль должен содержать строчные, прописные буквы, а также цифры!";
             model.addAttribute("error", message);
         }
         return "change-password";

@@ -7,14 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.university.deanery.exceptions.PasswordLengthException;
-import org.university.deanery.exceptions.PasswordRegexpException;
 import org.university.deanery.models.User;
 import org.university.deanery.repositories.RoleRepository;
 import org.university.deanery.repositories.UserRepository;
 
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -30,29 +27,15 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveUser(User user) throws PasswordRegexpException, PasswordLengthException {
-        if (!checkRegexp(user.getPassword()))
-            throw new PasswordRegexpException();
-        if (user.getPassword().length() <= 4)
-            throw new PasswordLengthException();
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singletonList(roleRepository.findRoleByTitle("USER")));
         userRepository.save(user);
     }
 
-    public void changeUserPassword(User user, String newPassword) throws PasswordRegexpException, PasswordLengthException {
-        if (!checkRegexp(newPassword))
-            throw new PasswordRegexpException();
-        if (newPassword.length() <= 4)
-            throw new PasswordLengthException();
+    public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-    }
-
-    private boolean checkRegexp(String password) {
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
-        Matcher matcher = pattern.matcher(password);
-        return matcher.find();
     }
 
     public User findUserByEmail(String email) {
