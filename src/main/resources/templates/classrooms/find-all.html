@@ -32,6 +32,11 @@
             <tr>
                 <td>Номер аудитории</td>
                 <td><a th:href="@{/classrooms/{id}(id=*{id})}" th:text="*{classroomNo}"></a></td>
+                <td>
+                    <form th:action="@{/classrooms/{id}(id=*{id})}" th:method="delete">
+                        <input type="submit" value="Удалить">
+                    </form>
+                </td>
             </tr>
         </table>
     </div>

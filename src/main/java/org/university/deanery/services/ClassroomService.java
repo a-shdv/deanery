@@ -33,4 +33,8 @@ public class ClassroomService {
     public void saveClassroom(Classroom classroom) {
         classroomRepository.save(classroom);
     }
+
+    public void deleteClassroom(Classroom classroom) {
+        classroomRepository.delete(classroom);
+    }
 }

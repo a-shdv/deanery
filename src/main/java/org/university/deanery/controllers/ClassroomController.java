@@ -78,9 +78,25 @@ public class ClassroomController {
             message = "Аудитория №" + id + " не найдена!";
             model.addAttribute("error", message);
             model.addAttribute("classrooms", classroomService.findAll());
-            return "classrooms/find-all";
         } catch (ClassroomNoAlreadyExistsException e) {
             message = "Аудитория №" + saveClassroomDto.getClassroomNo() + " уже существует!";
+            model.addAttribute("error", message);
+            model.addAttribute("classrooms", classroomService.findAll());
+        }
+        return "classrooms/find-all";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteById(@PathVariable Long id, Model model) {
+        String message;
+        try {
+            Optional<Classroom> classroom = Optional.ofNullable(classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new));
+            classroomService.deleteClassroom(classroom.get());
+            message = "Аудитория успешно удалена!";
+            model.addAttribute("success", message);
+            model.addAttribute("classrooms", classroomService.findAll());
+        } catch (ClassroomNotFoundException e) {
+            message = "Аудитория №" + id + " не найдена!";
             model.addAttribute("error", message);
             model.addAttribute("classrooms", classroomService.findAll());
         }
