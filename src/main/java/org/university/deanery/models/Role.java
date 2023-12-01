@@ -1,12 +1,16 @@
 package org.university.deanery.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
 @Entity
 @Table(name = "roles")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role implements GrantedAuthority {
 
     @Id
@@ -15,8 +19,12 @@ public class Role implements GrantedAuthority {
 
     private String title;
 
+    public Role(String title) {
+        this.title = title;
+    }
+
     @ManyToMany(mappedBy = "roles")
-    private Collection<Dean> deans;
+    private Collection<User> users;
 
     @Override
     public String getAuthority() {

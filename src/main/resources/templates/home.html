@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Деканат: Главная</title>
+</head>
+<body>
+    <h2>Главная</h2>
+    <div sec:authorize="isAnonymous()">
+        <header>
+            <ul>
+                <li><a th:href="@{/sign-in}">Войти</a></li>
+                <li><a th:href="@{/sign-up}">Зарегистрироваться</a></li>
+            </ul>
+        </header>
+    </div>
+
+    <main>
+        <div sec:authorize="isAuthenticated()">
+            <span th:text="'Добро пожаловать ' + ${#authentication.getName()} + '!'"></span> <br>
+            <br>
+            <a th:href="@{/change-password}">Сменить пароль</a>
+            <br>
+            <br>
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Выйти"/>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

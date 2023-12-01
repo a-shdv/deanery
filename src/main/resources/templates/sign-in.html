@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Деканат: Авторизация</title>
+</head>
+<body>
+    <h2>Войти</h2>
+    <div th:if="${success}" th:text="${success}" style="color: green"></div>
+    <div th:if="${param.error}" style="color: red">Неправильный логин или пароль!</div>
+    <!--Форма логина-->
+    <form th:action="@{/sign-in}" method="post">
+        <table>
+            <!--Имя пользователя-->
+            <tr>
+                <td><label for="username">Имя пользователя</label></td>
+                <td><input type="text" id="username" name="username" placeholder="Введите имя пользователя"></td>
+            </tr>
+
+            <!--Пароль-->
+            <tr>
+                <td><label for="password">Пароль</label></td>
+                <td><input type="password" id="password" name="password" placeholder="Введите пароль"></td>
+            </tr>
+
+            <!--Кнопка "Войти"-->
+            <tr>
+                <td><input type="submit" value="Войти"></td>
+            </tr>
+        </table>
+    </form>
+
+    <a th:href="@{/}">На главную</a>
+    <a th:href="@{/sign-up}">Зарегистрироваться</a>
+</body>
+</html>

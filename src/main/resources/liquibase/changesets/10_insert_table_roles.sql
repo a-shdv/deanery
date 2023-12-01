@@ -1,0 +1,1 @@
+insert into roles (title) values ('ADMIN'), ('USER');
