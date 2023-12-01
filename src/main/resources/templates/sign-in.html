@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Войти</h2>
+    <div th:if="${success}" th:text="${success}" style="color: green"></div>
     <!--Форма логина-->
     <form th:action="@{/sign-in}" method="post">
         <table>

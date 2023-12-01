@@ -19,3 +19,5 @@ databaseChangeLog:
       file: liquibase/changesets/08_create_table_timetables.sql
   - include:
       file: liquibase/changesets/09_create_table_users_roles.sql
+  - include:
+      file: liquibase/changesets/10_insert_table_roles.sql

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.university.deanery.dtos.SignUpDto;
+import org.university.deanery.exceptions.PasswordsMismatchException;
 import org.university.deanery.exceptions.UserAlreadyExistsException;
 import org.university.deanery.models.User;
 import org.university.deanery.services.UserService;
@@ -31,19 +32,28 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) throws UserAlreadyExistsException {
+    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) {
         User user = (User) userService.loadUserByUsername(signUpDto.getUsername());
         String message = "";
+        model.asMap().clear();
         try {
-            if (user != null) {
-                message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
-                throw new UserAlreadyExistsException(message);
-            }
-            userService.saveUser(user);
+            if (user != null)
+                throw new UserAlreadyExistsException();
+            if (!signUpDto.getPassword().equals(signUpDto.getPasswordConfirm()))
+                throw new PasswordsMismatchException();
+            userService.saveUser(SignUpDto.toUser(signUpDto));
+            message = "Пользователь " + signUpDto.getUsername() + " успешно создан!";
+            model.addAttribute("success", message);
         } catch (UserAlreadyExistsException ex) {
-            model.addAttribute("message", message);
+            message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
+            model.addAttribute("error", message);
+            return "sign-up";
+        } catch (PasswordsMismatchException ex) {
+            message = "Пароли не совпадают!";
+            model.addAttribute("error", message);
+            return "sign-up";
         }
 
-        return "sign-up";
+        return "sign-in";
     }
 }

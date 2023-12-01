@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Зарегистрироваться</h2>
+    <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <!--Форма логина-->
     <form th:action="@{/sign-up}" method="post">
         <table>
