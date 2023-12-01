@@ -19,6 +19,9 @@
         <div sec:authorize="isAuthenticated()">
             <span th:text="'Добро пожаловать ' + ${#authentication.getName()} + '!'"></span> <br>
             <br>
+            <a th:href="@{/classrooms}">Аудитории</a>
+            <br>
+            <br>
             <a th:href="@{/change-password}">Сменить пароль</a>
             <br>
             <br>

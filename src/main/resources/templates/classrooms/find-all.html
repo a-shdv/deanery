@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: Аудитории</title>
+</head>
+<body>
+<h2>Список аудиторий</h2>
+<main>
+    <div th:if="${classrooms.isEmpty()}" th:text="'Список аудиторий пуст!'" style="color: darkorange"></div>
+    <div th:unless="${classrooms.isEmpty()}">
+        <table th:each="classroom : ${classrooms}" th:object="${classroom}" border="1">
+            <tr>
+                <td>Номер аудитории</td>
+                <td><a th:href="@{/classrooms/{id}(id=*{id})}" th:text="*{classroomNo}"></a></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <button onclick="history.back()">На главную</button>
+</main>
+</body>
+</html>

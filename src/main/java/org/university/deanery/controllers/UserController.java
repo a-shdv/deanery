@@ -23,12 +23,12 @@ public class UserController {
 
     @GetMapping("/sign-in")
     public String signIn() {
-        return "sign-in";
+        return "users/sign-in";
     }
 
     @GetMapping("/sign-up")
     public String signUp() {
-        return "sign-up";
+        return "users/sign-up";
     }
 
     @PostMapping("/sign-up")
@@ -51,27 +51,27 @@ public class UserController {
         } catch (UserUsernameAlreadyExistsException e) {
             message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
             model.addAttribute("error", message);
-            return "sign-up";
+            return "users/sign-up";
         } catch (PasswordsMismatchException e) {
             message = "Пароли не совпадают!";
             model.addAttribute("error", message);
-            return "sign-up";
+            return "users/sign-up";
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
             model.addAttribute("error", message);
-            return "sign-up";
+            return "users/sign-up";
         } catch (UserEmailAlreadyExistsException e) {
             message = "Пользователь с электронной почтой " + signUpDto.getEmail() + " уже существует!";
             model.addAttribute("error", message);
-            return "sign-up";
+            return "users/sign-up";
         }
 
-        return "sign-in";
+        return "users/sign-in";
     }
 
     @GetMapping("/change-password")
     public String changePassword() {
-        return "change-password";
+        return "users/change-password";
     }
 
     @PostMapping("/change-password")
@@ -108,6 +108,6 @@ public class UserController {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
             model.addAttribute("error", message);
         }
-        return "change-password";
+        return "users/change-password";
     }
 }
