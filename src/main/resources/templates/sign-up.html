@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Зарегистрироваться</title>
+    <title>Деканат: Регистрация</title>
 </head>
 <body>
     <h2>Зарегистрироваться</h2>
@@ -10,6 +10,12 @@
     <!--Форма логина-->
     <form th:action="@{/sign-up}" method="post">
         <table>
+            <!--Электронная почта-->
+            <tr>
+                <td><label for="email">Электронная почта</label></td>
+                <td><input type="text" id="email" name="email" placeholder="Введите электронную почту"></td>
+            </tr>
+
             <!--Имя пользователя-->
             <tr>
                 <td><label for="username">Имя пользователя</label></td>
