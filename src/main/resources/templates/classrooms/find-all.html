@@ -9,9 +9,24 @@
 </head>
 <body>
 <h2>Список аудиторий</h2>
+<div th:if="${error}" th:text="${error}" style="color: red"></div>
 <main>
-    <div th:if="${classrooms.isEmpty()}" th:text="'Список аудиторий пуст!'" style="color: darkorange"></div>
-    <div th:unless="${classrooms.isEmpty()}">
+    <table>
+        <form th:action="@{/classrooms}" method="post" th:object="${saveClassroomDto}">
+            <!--Номер аудитории-->
+            <tr>
+                <td><label for="classroomNo">Номер аудитории</label></td>
+                <td><input type="number" id="classroomNo" name="classroomNo"></td>
+            </tr>
+            <!--Создать-->
+            <tr>
+                <td><input type="submit" value="Создать"></td>
+            </tr>
+        </form>
+    </table>
+    <br>
+
+    <div th:unless="${#lists.isEmpty(classrooms)}">
         <table th:each="classroom : ${classrooms}" th:object="${classroom}" border="1">
             <tr>
                 <td>Номер аудитории</td>

@@ -25,4 +25,12 @@ public class ClassroomService {
     public Optional<Classroom> findById(Long id) throws ClassroomNotFoundException {
         return Optional.ofNullable(classroomRepository.findById(id)).orElseThrow(ClassroomNotFoundException::new);
     }
+
+    public Optional<Classroom> findClassroomByClassroomNo(Integer classroomNo) {
+        return classroomRepository.findClassroomByClassroomNo(classroomNo);
+    }
+
+    public void saveClassroom(Classroom classroom) {
+        classroomRepository.save(classroom);
+    }
 }
