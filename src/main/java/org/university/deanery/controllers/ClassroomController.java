@@ -73,7 +73,7 @@ public class ClassroomController {
             if (classroomService.findClassroomByClassroomNo(saveClassroomDto.classroomNo()).isPresent())
                 throw new ClassroomNoAlreadyExistsException();
 
-            classroomService.saveClassroom(classroom.get());
+            classroomService.updateClassroomById(id, saveClassroomDto);
             message = "Аудитория успешно обновлена!";
             model.addAttribute("success", message);
             model.addAttribute("classrooms", classroomService.findAll());
@@ -86,7 +86,7 @@ public class ClassroomController {
             model.addAttribute("error", message);
             model.addAttribute("classrooms", classroomService.findAll());
         }
-        return "classrooms/find-all";
+        return "redirect:/classrooms";
     }
 
     @DeleteMapping("/{id}")
@@ -105,6 +105,6 @@ public class ClassroomController {
             model.addAttribute("error", message);
             model.addAttribute("classrooms", classroomService.findAll());
         }
-        return "classrooms/find-all";
+        return "redirect:/classrooms";
     }
 }

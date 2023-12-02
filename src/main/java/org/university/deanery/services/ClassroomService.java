@@ -2,6 +2,7 @@ package org.university.deanery.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.deanery.dtos.SaveClassroomDto;
 import org.university.deanery.exceptions.ClassroomNotFoundException;
 import org.university.deanery.models.Classroom;
 import org.university.deanery.repositories.ClassroomRepository;
@@ -32,6 +33,12 @@ public class ClassroomService {
 
     public void saveClassroom(Classroom classroom) {
         classroomRepository.save(classroom);
+    }
+
+    public void updateClassroomById(Long id, SaveClassroomDto saveClassroomDto) throws ClassroomNotFoundException {
+        Optional<Classroom> classroom = Optional.ofNullable(classroomRepository.findById(id).orElseThrow(() -> new ClassroomNotFoundException()));
+        classroom.get().setClassroomNo(saveClassroomDto.getClassroomNo());
+        classroomRepository.save(classroom.get());
     }
 
     public void deleteClassroom(Classroom classroom) {
