@@ -1,5 +1,6 @@
 package org.university.deanery.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,8 @@ import org.university.deanery.services.ClassroomService;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("classrooms")
+@RequestMapping("/classrooms")
+@Slf4j
 public class ClassroomController {
     private final ClassroomService classroomService;
 
@@ -61,10 +63,11 @@ public class ClassroomController {
         return "classrooms/find-all";
     }
 
-    @PostMapping("/{id}")
-    public String updateById(@PathVariable Long id, @ModelAttribute("saveClassroomDto") SaveClassroomDto saveClassroomDto, Model model) {
+    @PutMapping("/{id}")
+    public String updateById(@PathVariable("id") Long id, @ModelAttribute("saveClassroomDto") SaveClassroomDto saveClassroomDto, Model model) {
         String message;
         try {
+            log.info("updateById()");
             Optional<Classroom> classroom = Optional.ofNullable(classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new));
             classroom = Optional.of(SaveClassroomDto.toClassroom(saveClassroomDto));
             if (classroomService.findClassroomByClassroomNo(saveClassroomDto.classroomNo()).isPresent())
@@ -87,8 +90,10 @@ public class ClassroomController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteById(@PathVariable Long id, Model model) {
+    public String deleteById(@PathVariable("id") Long id, Model model) {
         String message;
+        log.info("deleteById()");
+
         try {
             Optional<Classroom> classroom = Optional.ofNullable(classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new));
             classroomService.deleteClassroom(classroom.get());

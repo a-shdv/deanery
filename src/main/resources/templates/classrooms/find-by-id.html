@@ -13,7 +13,7 @@
     <div th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.get().classroomNo}"></div>
     <br>
     <table>
-        <form th:action="@{/classrooms/{id}(id=${classroom.get().getId()})}" method="post" th:object="${saveClassroomDto}">
+        <form th:action="@{/classrooms/{id}(id=${classroom.get().getId()})}" th:method="put" th:object="${saveClassroomDto}">
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Новый номер аудитории</label></td>

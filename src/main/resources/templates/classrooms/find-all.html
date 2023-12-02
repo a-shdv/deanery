@@ -13,7 +13,7 @@
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
     <table>
-        <form th:action="@{/classrooms}" method="post" th:object="${saveClassroomDto}">
+        <form th:action="@{/classrooms}" th:method="post" th:object="${saveClassroomDto}">
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Номер аудитории</label></td>
@@ -33,7 +33,7 @@
                 <td>Номер аудитории</td>
                 <td><a th:href="@{/classrooms/{id}(id=*{id})}" th:text="*{classroomNo}"></a></td>
                 <td>
-                    <form th:action="@{/classrooms/{id}(id=*{id})}" th:method="delete">
+                    <form th:action="@{/classrooms/{id}(id=${classroom.getId()})}" th:method="delete">
                         <input type="submit" value="Удалить">
                     </form>
                 </td>
@@ -41,7 +41,7 @@
         </table>
     </div>
     <br>
-    <button onclick="history.back()">На главную</button>
+    <a href="/">На главную</a>
 </main>
 </body>
 </html>
