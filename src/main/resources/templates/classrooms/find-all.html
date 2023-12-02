@@ -13,11 +13,11 @@
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
     <table>
-        <form th:action="@{/classrooms}" th:method="post" th:object="${saveClassroomDto}">
+        <form th:action="@{/classrooms}" th:method="post" th:object="${classroomDto}">
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Номер аудитории</label></td>
-                <td><input type="number" id="classroomNo" name="classroomNo"></td>
+                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории"></td>
             </tr>
             <!--Создать-->
             <tr>
