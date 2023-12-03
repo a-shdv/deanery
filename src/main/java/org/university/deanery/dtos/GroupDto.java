@@ -5,6 +5,7 @@ import org.university.deanery.models.Group;
 import org.university.deanery.models.User;
 
 public record GroupDto(@Getter String title, @Getter User user) {
+
     public GroupDto(String title, User user) {
         this.title = title;
         this.user = user;
