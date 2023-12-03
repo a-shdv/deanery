@@ -17,5 +17,10 @@ public class Classroom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private Integer classroomNo;
+
+    public Classroom(Integer classroomNo) {
+        this.classroomNo = classroomNo;
+    }
 }

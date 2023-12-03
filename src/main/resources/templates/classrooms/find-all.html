@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: Аудитории</title>
+</head>
+<body>
+<h2>Список аудиторий</h2>
+<div th:if="${error}" th:text="${error}" style="color: red"></div>
+<div th:if="${success}" th:text="${success}" style="color: green"></div>
+<main>
+    <table>
+        <form th:action="@{/classrooms}" th:method="post" th:object="${classroomDto}">
+            <!--Номер аудитории-->
+            <tr>
+                <td><label for="classroomNo">Номер аудитории</label></td>
+                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории"></td>
+            </tr>
+            <!--Создать-->
+            <tr>
+                <td><input type="submit" value="Создать"></td>
+            </tr>
+        </form>
+    </table>
+    <br>
+
+    <div th:if="${#lists.isEmpty(classrooms)}">
+        <span style="color: darkorange">Список аудиторий пуст!</span>
+    </div>
+    <div th:unless="${#lists.isEmpty(classrooms)}">
+        <table th:each="classroom : ${classrooms}" th:object="${classroom}" border="1">
+            <tr>
+                <td>Номер аудитории</td>
+                <td><a th:href="@{/classrooms/{id}(id=*{id})}" th:text="*{classroomNo}"></a></td>
+                <td>
+                    <form th:action="@{/classrooms/{id}(id=${classroom.getId()})}" th:method="delete">
+                        <input type="submit" value="Удалить">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <a href="/">На главную</a>
+</main>
+</body>
+</html>

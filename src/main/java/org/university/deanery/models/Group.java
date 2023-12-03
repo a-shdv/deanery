@@ -19,8 +19,12 @@ public class Group {
 
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Group(String title, User user) {
+        this.title = title;
+        this.user = user;
+    }
 }

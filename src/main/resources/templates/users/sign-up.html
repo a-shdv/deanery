@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Деканат: Авторизация</title>
+    <title>Деканат: Регистрация</title>
 </head>
 <body>
-    <h2>Войти</h2>
-    <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <div th:if="${param.error}" style="color: red">Неправильный логин или пароль!</div>
+    <h2>Регистрация</h2>
+    <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <!--Форма логина-->
-    <form th:action="@{/sign-in}" method="post">
+    <form th:action="@{/sign-up}" th:method="post">
         <table>
+            <!--Электронная почта-->
+            <tr>
+                <td><label for="email">Электронная почта</label></td>
+                <td><input type="email" id="email" name="email" placeholder="Введите электронную почту"></td>
+            </tr>
+
             <!--Имя пользователя-->
             <tr>
                 <td><label for="username">Имя пользователя</label></td>
@@ -23,6 +28,12 @@
                 <td><input type="password" id="password" name="password" placeholder="Введите пароль"></td>
             </tr>
 
+            <!--Подтвердите пароль-->
+            <tr>
+                <td><label for="password">Подтвердите пароль</label></td>
+                <td><input type="password" id="password-confirm" name="passwordConfirm" placeholder="Подтвердите пароль"></td>
+            </tr>
+
             <!--Кнопка "Войти"-->
             <tr>
                 <td><input type="submit" value="Войти"></td>
@@ -31,6 +42,6 @@
     </form>
 
     <a th:href="@{/}">На главную</a>
-    <a th:href="@{/sign-up}">Зарегистрироваться</a>
+    <a th:href="@{/sign-in}">Войти</a>
 </body>
 </html>
