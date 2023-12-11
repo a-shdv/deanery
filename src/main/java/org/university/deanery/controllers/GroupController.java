@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupAlreadyExistsException;
 import org.university.deanery.exceptions.GroupNotFoundException;
@@ -23,26 +24,29 @@ public class GroupController {
     }
 
     @PostMapping
-    public String save(@ModelAttribute("groupDto") GroupDto groupDto, Model model) {
-        Optional<Group> group = groupService.findGroupByTitle(groupDto.getTitle());
+    public String save(@ModelAttribute("groupDto") GroupDto groupDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
-            if (!group.isEmpty())
+            if (groupService.findGroupByTitle(groupDto.getTitle()).isPresent())
                 throw new GroupAlreadyExistsException();
             groupService.save(GroupDto.toGroup(groupDto));
             message = "Группа " + groupDto.getTitle() + " успешно создана!";
-            model.addAttribute("success", message);
-            model.addAttribute("groups", groupService.findAll());
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (GroupAlreadyExistsException e) {
             message = "Группа " + groupDto.getTitle() + " уже существует!";
-            model.addAttribute("error", message);
-            model.addAttribute("groups", groupService.findAll());
+            redirectAttributes.addFlashAttribute("error", message);
         }
-        return "groups/find-all";
+        return "redirect:/groups";
     }
 
     @GetMapping
     public String findAll(@ModelAttribute("groupDto") GroupDto groupDto, Model model) {
+        String success = (String) model.getAttribute("success");
+        String error = (String) model.getAttribute("error");
+        if (success != null)
+            model.addAttribute("success", success);
+        if (error != null)
+            model.addAttribute("error", error);
         model.addAttribute("groups", groupService.findAll());
         return "groups/find-all";
     }
@@ -51,7 +55,7 @@ public class GroupController {
     public String findById(@PathVariable Long id, Model model) {
         String message;
         try {
-            Group group = groupService.findById(id).get();
+            Group group = groupService.findById(id).orElseThrow(GroupNotFoundException::new);
             model.addAttribute("group", group);
         } catch (GroupNotFoundException e) {
             message = "Группа с id " + id + " не найдена!";
@@ -85,19 +89,17 @@ public class GroupController {
     }
 
     @DeleteMapping("{id}")
-    public String deleteById(@PathVariable("id") Long id, Model model) {
+    public String deleteById(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         String message;
         try {
             if (groupService.findById(id).isEmpty())
                 throw new GroupNotFoundException();
             groupService.deleteById(id);
-            message = "Группа успешно удалена!";
-            model.addAttribute("success", message);
-            model.addAttribute("groups", groupService.findAll());
+            message = "Группа успешно с id: " + id + " удалена!";
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (GroupNotFoundException e) {
-            message = "Группа " + id + " не найдена!";
-            model.addAttribute("error", message);
-            model.addAttribute("groups", groupService.findAll());
+            message = "Группа с id: " + id + " не найдена!";
+            redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/groups";
     }

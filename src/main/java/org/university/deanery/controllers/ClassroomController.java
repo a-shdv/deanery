@@ -76,13 +76,13 @@ public class ClassroomController {
                 throw new ClassroomAlreadyExistsException();
             classroomService.updateById(id, classroomDto);
             message = "Аудитория успешно обновлена!";
-            redirectAttributes.addAttribute("success", message);
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (ClassroomNotFoundException e) {
             message = "Аудитория №" + id + " не найдена!";
-            redirectAttributes.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (ClassroomAlreadyExistsException e) {
             message = "Аудитория №" + classroomDto.getClassroomNo() + " уже существует!";
-            redirectAttributes.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/classrooms";
     }

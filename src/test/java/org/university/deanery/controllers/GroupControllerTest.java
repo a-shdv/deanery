@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
@@ -38,7 +39,7 @@ public class GroupControllerTest {
     public void testSaveNewGroup() {
         // Arrange
         GroupDto groupDto = new GroupDto("new-group", null);
-        Model model = mock(Model.class);
+        RedirectAttributes model = mock(RedirectAttributes.class);
 
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.empty());
 
@@ -56,7 +57,7 @@ public class GroupControllerTest {
     public void testSaveExistingGroup() {
         // Arrange
         GroupDto groupDto = new GroupDto("ExistingGroup", null);
-        Model model = mock(Model.class);
+        RedirectAttributes model = mock(RedirectAttributes.class);
 
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.of(new Group()));
 
@@ -176,7 +177,7 @@ public class GroupControllerTest {
         // Arrange
         Long groupId = 1L;
 
-        Model model = mock(Model.class);
+        RedirectAttributes model = mock(RedirectAttributes.class);
         Group existingGroup = new Group(); // Create a sample existing Group object for testing
 
         when(groupService.findById(groupId)).thenReturn(Optional.of(existingGroup));
@@ -196,7 +197,7 @@ public class GroupControllerTest {
         // Arrange
         Long groupId = 2L;
 
-        Model model = mock(Model.class);
+        RedirectAttributes model = mock(RedirectAttributes.class);
 
         when(groupService.findById(groupId)).thenReturn(Optional.empty());
 

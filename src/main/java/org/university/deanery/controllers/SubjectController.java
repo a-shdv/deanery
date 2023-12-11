@@ -45,7 +45,7 @@ public class SubjectController {
                 throw new SubjectAlreadyExistsException();
             subjectService.save(subject);
             message = "Предмет " + subjectDto.getTitle() + " успешно сохранен!";
-            redirectAttributes.addAttribute("success", message);
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (SubjectAlreadyExistsException e) {
             message = "Предмет с таким названием уже существует!";
             redirectAttributes.addFlashAttribute("error", message);

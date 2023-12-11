@@ -29,18 +29,18 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
-    public Optional<Group> findById(Long id) throws GroupNotFoundException {
-        return Optional.ofNullable(groupRepository.findById(id)).orElseThrow(GroupNotFoundException::new);
+    public Optional<Group> findById(Long id) {
+        return Optional.ofNullable(groupRepository.findById(id)).get();
     }
 
     public Optional<Group> findGroupByTitle(String title) {
         return groupRepository.findGroupByTitle(title);
     }
 
-    public void updateById(Long id, GroupDto groupDto) throws GroupNotFoundException {
-        Optional<Group> group = Optional.ofNullable(groupRepository.findById(id).orElseThrow(GroupNotFoundException::new));
-        group.get().setTitle(groupDto.getTitle());
-        groupRepository.save(group.get());
+    public void updateById(Long id, GroupDto groupDto) {
+        Group group = groupRepository.findById(id).get();
+        group.setTitle(groupDto.getTitle());
+        groupRepository.save(group);
     }
 
     public void deleteById(Long id) {
