@@ -52,10 +52,9 @@ public class EmailSenderService {
         emailSender.send(mimeMessage);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void sendEmail() throws MessagingException, FileNotFoundException {
-        this.sendEmailWithAttachment(fromAddress, "deanery-app", userService.findAll().toString(), "/Users/a-shdv/IdeaProjects/deanery/test.pdf");
-        log.info("Mail sent successfully");
-
-    }
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void sendEmail() throws MessagingException, FileNotFoundException {
+//        this.sendEmailWithAttachment(fromAddress, "deanery-app", userService.findAll().toString(), "/Users/a-shdv/IdeaProjects/deanery/test.pdf");
+//        log.info("Mail sent successfully");
+//    }
 }

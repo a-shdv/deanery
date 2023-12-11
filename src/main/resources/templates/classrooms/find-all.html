@@ -17,7 +17,7 @@
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Номер аудитории</label></td>
-                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории"></td>
+                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории" required></td>
             </tr>
             <!--Создать-->
             <tr>
@@ -30,6 +30,7 @@
     <div th:if="${#lists.isEmpty(classrooms)}">
         <span style="color: darkorange">Список аудиторий пуст!</span>
     </div>
+
     <div th:unless="${#lists.isEmpty(classrooms)}">
         <table th:each="classroom : ${classrooms}" th:object="${classroom}" border="1">
             <tr>

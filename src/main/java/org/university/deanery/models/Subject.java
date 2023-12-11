@@ -26,4 +26,8 @@ public class Subject {
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Timetable> timetables;
+
+    public Subject(String title) {
+        this.title = title;
+    }
 }

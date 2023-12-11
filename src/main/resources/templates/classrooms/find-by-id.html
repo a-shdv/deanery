@@ -10,10 +10,10 @@
 <body>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <div th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.get().classroomNo}"></div>
+    <div th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.classroomNo}"></div>
     <br>
     <table>
-        <form th:action="@{/classrooms/{id}(id=${classroom.get().getId()})}" th:method="put" th:object="${classroomDto}">
+        <form th:action="@{/classrooms/{id}(id=${classroom.id})}" th:method="put" th:object="${classroomDto}">
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Новый номер аудитории</label></td>

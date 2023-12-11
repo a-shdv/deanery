@@ -23,8 +23,8 @@ public class ClassroomService {
         return classroomRepository.findAll();
     }
 
-    public Optional<Classroom> findById(Long id) throws ClassroomNotFoundException {
-        return Optional.ofNullable(classroomRepository.findById(id)).orElseThrow(ClassroomNotFoundException::new);
+    public Optional<Classroom> findById(Long id) {
+        return Optional.ofNullable(classroomRepository.findById(id)).get();
     }
 
     public Optional<Classroom> findClassroomByClassroomNo(Integer classroomNo) {
@@ -36,9 +36,14 @@ public class ClassroomService {
     }
 
     public void updateById(Long id, ClassroomDto classroomDto) throws ClassroomNotFoundException {
-        Optional<Classroom> classroom = Optional.ofNullable(classroomRepository.findById(id).orElseThrow(() -> new ClassroomNotFoundException()));
-        classroom.get().setClassroomNo(classroomDto.getClassroomNo());
-        classroomRepository.save(classroom.get());
+        Classroom classroom = classroomRepository.findById(id).get();
+        classroom.setClassroomNo(classroomDto.getClassroomNo());
+        classroomRepository.save(classroom);
+    }
+
+    public void updateByClassroomNo(Integer classroomNo) {
+        Classroom classroom = classroomRepository.findClassroomByClassroomNo(classroomNo).get();
+        classroomRepository.save(classroom);
     }
 
     public void delete(Classroom classroom) {

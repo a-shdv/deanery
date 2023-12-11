@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.ClassroomDto;
 import org.university.deanery.exceptions.ClassroomAlreadyExistsException;
 import org.university.deanery.exceptions.ClassroomNotFoundException;
 import org.university.deanery.models.Classroom;
 import org.university.deanery.services.ClassroomService;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/classrooms")
@@ -25,27 +24,30 @@ public class ClassroomController {
     }
 
     @PostMapping
-    public String save(@ModelAttribute("classroomDto") ClassroomDto classroomDto, Model model) {
-        Optional<Classroom> classroom = classroomService.findClassroomByClassroomNo(classroomDto.getClassroomNo());
+    public String save(@ModelAttribute("classroomDto") ClassroomDto classroomDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
-            if (classroom.isPresent())
+            if (classroomService.findClassroomByClassroomNo(classroomDto.getClassroomNo()).isPresent())
                 throw new ClassroomAlreadyExistsException();
             classroomService.save(ClassroomDto.toClassroom(classroomDto));
             message = "Аудитория №" + classroomDto.getClassroomNo() + " успешно создана!";
-            model.addAttribute("success", message);
-            model.addAttribute("classrooms", classroomService.findAll());
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (ClassroomAlreadyExistsException e) {
             message = "Аудитория №" + classroomDto.classroomNo() + " уже существует!";
-            model.addAttribute("error", message);
-            model.addAttribute("classrooms", classroomService.findAll());
+            redirectAttributes.addFlashAttribute("error", message);
         }
 
-        return "classrooms/find-all";
+        return "redirect:/classrooms";
     }
 
     @GetMapping
     public String findAll(Model model) {
+        String success = (String) model.getAttribute("success");
+        String error = (String) model.getAttribute("error");
+        if (success != null)
+            model.addAttribute("success", success);
+        if (error != null)
+            model.addAttribute("error", error);
         model.addAttribute("classrooms", classroomService.findAll());
         return "classrooms/find-all";
     }
@@ -54,7 +56,7 @@ public class ClassroomController {
     public String findById(@PathVariable Long id, Model model) {
         String message;
         try {
-            Optional<Classroom> classroom = classroomService.findById(id);
+            Classroom classroom = classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new);
             model.addAttribute("classroom", classroom);
         } catch (ClassroomNotFoundException e) {
             message = "Аудитория №" + id + " не найдена!";
@@ -64,9 +66,8 @@ public class ClassroomController {
     }
 
 
-
     @PutMapping("{id}")
-    public String updateById(@PathVariable("id") Long id, @ModelAttribute("classroomDto") ClassroomDto classroomDto, Model model) {
+    public String updateById(@PathVariable("id") Long id, @ModelAttribute("classroomDto") ClassroomDto classroomDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
             if (classroomService.findById(id).isEmpty())
@@ -75,33 +76,28 @@ public class ClassroomController {
                 throw new ClassroomAlreadyExistsException();
             classroomService.updateById(id, classroomDto);
             message = "Аудитория успешно обновлена!";
-            model.addAttribute("success", message);
-            model.addAttribute("classrooms", classroomService.findAll());
+            redirectAttributes.addAttribute("success", message);
         } catch (ClassroomNotFoundException e) {
             message = "Аудитория №" + id + " не найдена!";
-            model.addAttribute("error", message);
-            model.addAttribute("classrooms", classroomService.findAll());
+            redirectAttributes.addAttribute("error", message);
         } catch (ClassroomAlreadyExistsException e) {
             message = "Аудитория №" + classroomDto.getClassroomNo() + " уже существует!";
-            model.addAttribute("error", message);
-            model.addAttribute("classrooms", classroomService.findAll());
+            redirectAttributes.addAttribute("error", message);
         }
         return "redirect:/classrooms";
     }
 
     @DeleteMapping("{id}")
-    public String deleteById(@PathVariable("id") Long id, Model model) {
+    public String deleteById(@PathVariable("id") Long id, RedirectAttributes model) {
         String message;
         try {
-            Optional<Classroom> classroom = Optional.ofNullable(classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new));
-            classroomService.delete(classroom.get());
+            Classroom classroom = classroomService.findById(id).orElseThrow(ClassroomNotFoundException::new);
+            classroomService.delete(classroom);
             message = "Аудитория успешно удалена!";
             model.addAttribute("success", message);
-            model.addAttribute("classrooms", classroomService.findAll());
         } catch (ClassroomNotFoundException e) {
             message = "Аудитория №" + id + " не найдена!";
             model.addAttribute("error", message);
-            model.addAttribute("classrooms", classroomService.findAll());
         }
         return "redirect:/classrooms";
     }
