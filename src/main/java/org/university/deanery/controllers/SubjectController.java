@@ -3,10 +3,7 @@ package org.university.deanery.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.SubjectDto;
 import org.university.deanery.exceptions.SubjectAlreadyExistsException;
@@ -24,6 +21,22 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
+    @PostMapping
+    public String save(@ModelAttribute("subjectDto") SubjectDto subjectDto, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            if (subjectService.findSubjectByTitle(subjectDto.getTitle()).isPresent())
+                throw new SubjectAlreadyExistsException();
+            subjectService.save(SubjectDto.toSubject(subjectDto));
+            message = "Предмет " + subjectDto.getTitle() + " успешно сохранен!";
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (SubjectAlreadyExistsException e) {
+            message = "Предмет с таким названием уже существует!";
+            redirectAttributes.addFlashAttribute("error", message);
+        }
+        return "redirect:/subjects";
+    }
+
     @GetMapping
     public String findAll(Model model) {
         String success = (String) model.getAttribute("success");
@@ -31,24 +44,56 @@ public class SubjectController {
         if (success != null)
             model.addAttribute("message", success);
         if (error != null)
-            model.addAttribute("error", success);
+            model.addAttribute("error", error);
         model.addAttribute("subjects", subjectService.findAll());
         return "subjects/find-all";
     }
 
-    @PostMapping
-    public String save(@ModelAttribute("subjectDto") SubjectDto subjectDto, RedirectAttributes redirectAttributes) throws SubjectNotFoundException {
+    @GetMapping("/{id}")
+    public String findById(@PathVariable Long id, Model model) {
         String message;
         try {
-            Subject subject = subjectService.findSubjectByTitle(subjectDto.getTitle()).get();
-            if (subject != null)
+            Subject subject = subjectService.findById(id).orElseThrow(SubjectNotFoundException::new);
+            model.addAttribute("subject", subject);
+        } catch (SubjectNotFoundException e) {
+            message = "Предмет с id: " + id + " не найден!";
+            model.addAttribute("error", message);
+        }
+        return "subjects/find-by-id";
+    }
+
+    @PutMapping("/{id}")
+    public String updateById(@PathVariable Long id, @ModelAttribute SubjectDto subjectDto, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            if (subjectService.findById(id).isEmpty())
+                throw new SubjectNotFoundException();
+            if (subjectService.findSubjectByTitle(subjectDto.getTitle()).isPresent())
                 throw new SubjectAlreadyExistsException();
-            subjectService.save(subject);
-            message = "Предмет " + subjectDto.getTitle() + " успешно сохранен!";
+            subjectService.updateById(id, subjectDto);
+            message = "Предмет успешно обновлен!";
             redirectAttributes.addFlashAttribute("success", message);
-        } catch (SubjectAlreadyExistsException e) {
-            message = "Предмет с таким названием уже существует!";
+        } catch (SubjectNotFoundException e) {
+            message = "Предмет " + id + " не найдена!";
             redirectAttributes.addFlashAttribute("error", message);
+        } catch (SubjectAlreadyExistsException e) {
+            message = "Предмет " + subjectDto.getTitle() + " уже существует!";
+            redirectAttributes.addFlashAttribute("error", message);
+        }
+        return "redirect:/subjects";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteById(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            subjectService.findById(id).orElseThrow(SubjectNotFoundException::new);
+            subjectService.deleteById(id);
+            message = "Предмет успешно удален!";
+            redirectAttributes.addAttribute("success", message);
+        } catch (SubjectNotFoundException e) {
+            message = "Аудитория №" + id + " не найдена!";
+            redirectAttributes.addAttribute("error", message);
         }
         return "redirect:/subjects";
     }

@@ -10,7 +10,7 @@
 <body>
 <div th:if="${error}" th:text="${error}" style="color: red"></div>
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
-<div th:if="${group}" th:object="${group}" th:text="*{'Название группы: ' + title}"></div>
+<div th:if="${group}" th:object="${group}" th:text="*{'Название группы: ' + title}" style="font-weight: bold"></div>
 <br>
 <table>
     <form th:action="@{/groups/{id}(id=${group.getId()})}" th:method="put" th:object="${groupDto}">
