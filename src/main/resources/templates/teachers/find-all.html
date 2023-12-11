@@ -47,12 +47,13 @@
     <div th:unless="${#lists.isEmpty(teachers)}">
         <table border="1">
             <thead>
-                <tr>ФИО</tr>
-                <tr>Действие</tr>
+            <tr>ФИО</tr>
+            <tr>Действие</tr>
             </thead>
             <tbody th:each="teacher : ${teachers}" th:object="${teacher}">
             <tr>
-                <td><a th:href="@{/teachers/{id}(id=*{id})}" th:text="|*{lastName} *{firstName} *{patronymicName}|"></a></td>
+                <td><a th:href="@{/teachers/{id}(id=*{id})}" th:text="|*{lastName} *{firstName} *{patronymicName}|"></a>
+                </td>
                 <td>
                     <form th:action="@{/teachers/{id}(id=${teacher.id})}" th:method="delete">
                         <input type="submit" value="Удалить">

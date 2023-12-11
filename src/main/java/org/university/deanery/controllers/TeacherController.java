@@ -12,16 +12,19 @@ import org.university.deanery.exceptions.SubjectNotFoundException;
 import org.university.deanery.exceptions.TeacherAlreadyExistsException;
 import org.university.deanery.exceptions.TeacherNotFoundException;
 import org.university.deanery.models.Teacher;
+import org.university.deanery.services.SubjectService;
 import org.university.deanery.services.TeacherService;
 
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
     private final TeacherService teacherService;
+    private final SubjectService subjectService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService) {
+    public TeacherController(TeacherService teacherService, SubjectService subjectService) {
         this.teacherService = teacherService;
+        this.subjectService = subjectService;
     }
 
     @PostMapping
@@ -58,6 +61,7 @@ public class TeacherController {
         if (error != null)
             model.addAttribute("error", error);
         model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("subjects", subjectService.findAll());
         return "teachers/find-all";
     }
 
