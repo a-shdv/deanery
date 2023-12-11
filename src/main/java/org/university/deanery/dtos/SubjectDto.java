@@ -12,6 +12,8 @@ public record SubjectDto(@Getter String title) {
     }
 
     public static Subject toSubject(SubjectDto subjectDto) {
-        return new Subject(subjectDto.title);
+        return Subject.builder()
+                .title(subjectDto.title)
+                .build();
     }
 }

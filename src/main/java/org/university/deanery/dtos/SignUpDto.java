@@ -12,6 +12,10 @@ public record SignUpDto(@Getter String email, @Getter String username, @Getter S
     }
 
     public static User toUser(SignUpDto dto) {
-        return new User(dto.getEmail(), dto.getUsername(), dto.getPassword());
-    }
+        return User.builder()
+                .email(dto.getEmail())
+                .username(dto.getUsername())
+                .password(dto.getPassword())
+                .build();
+            }
 }

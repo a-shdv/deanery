@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: предметы</title>
+</head>
+<body>
+<h2>Список преподавателей</h2>
+<div th:if="${error}" th:text="${error}" style="color: red"></div>
+<div th:if="${success}" th:text="${success}" style="color: green"></div>
+<main>
+    <table>
+        <form th:action="@{/teachers}" th:method="post" th:object="${teacherDto}">
+            <!--Фамилия преподавателя-->
+            <tr>
+                <td><label for="lastName">Фамилия</label></td>
+                <td><input type="text" id="lastName" name="lastName" placeholder="Введите фамилию преподавателя"
+                           required></td>
+            </tr>
+            <!--Имя преподавателя-->
+            <tr>
+                <td><label for="firstName">Имя</label></td>
+                <td><input type="text" id="firstName" name="firstName" placeholder="Введите  имя преподавателя"
+                           required></td>
+            </tr>
+            <!--Отчество преподавателя-->
+            <tr>
+                <td><label for="patronymicName">Отчество</label></td>
+                <td><input type="text" id="patronymicName" name="patronymicName"
+                           placeholder="Введите отчество преподавателя" required></td>
+            </tr>
+            <!--Создать-->
+            <tr>
+                <td><input type="submit" value="Создать"></td>
+            </tr>
+        </form>
+    </table>
+    <br>
+
+    <div th:if="${#lists.isEmpty(teachers)}">
+        <span style="color: darkorange">Список преподавателей пуст!</span>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(teachers)}">
+        <table border="1">
+            <thead>
+                <tr>ФИО</tr>
+                <tr>Действие</tr>
+            </thead>
+            <tbody th:each="teacher : ${teachers}" th:object="${teacher}">
+            <tr>
+                <td><a th:href="@{/teachers/{id}(id=*{id})}" th:text="|*{lastName} *{firstName} *{patronymicName}|"></a></td>
+                <td>
+                    <form th:action="@{/teachers/{id}(id=${teacher.id})}" th:method="delete">
+                        <input type="submit" value="Удалить">
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <a href="/">На главную</a>
+</main>
+</body>
+</html>
