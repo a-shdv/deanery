@@ -2,10 +2,12 @@ package org.university.deanery.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.dtos.TeacherDto;
+import org.university.deanery.models.Subject;
 import org.university.deanery.models.Teacher;
+import org.university.deanery.models.TeacherSubject;
 import org.university.deanery.repositories.TeacherRepository;
+import org.university.deanery.repositories.TeacherSubjectRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +15,12 @@ import java.util.Optional;
 @Service
 public class TeacherService {
     private final TeacherRepository teacherRepository;
+    private final TeacherSubjectRepository teacherSubjectRepository;
 
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository) {
+    public TeacherService(TeacherRepository teacherRepository, TeacherSubjectRepository teacherSubjectRepository) {
         this.teacherRepository = teacherRepository;
+        this.teacherSubjectRepository = teacherSubjectRepository;
     }
 
     public void save(Teacher teacher) {
@@ -48,6 +52,14 @@ public class TeacherService {
 
     public void deleteById(Long id) {
         teacherRepository.deleteById(id);
+    }
+
+    public void addTeacherSubject(TeacherSubject teacherSubject) {
+        teacherSubjectRepository.save(teacherSubject);
+    }
+
+    public List<TeacherSubject> findAllTeacherSubjects(Teacher teacher) {
+        return teacher.getTeacherSubjects();
     }
 
     private String capitalizeFirstLetter(String input) {

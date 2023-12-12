@@ -5,13 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.university.deanery.dtos.ClassroomDto;
+import org.university.deanery.dtos.SubjectDto;
 import org.university.deanery.dtos.TeacherDto;
-import org.university.deanery.exceptions.ClassroomAlreadyExistsException;
 import org.university.deanery.exceptions.SubjectNotFoundException;
 import org.university.deanery.exceptions.TeacherAlreadyExistsException;
 import org.university.deanery.exceptions.TeacherNotFoundException;
+import org.university.deanery.models.Subject;
 import org.university.deanery.models.Teacher;
+import org.university.deanery.models.TeacherSubject;
 import org.university.deanery.services.SubjectService;
 import org.university.deanery.services.TeacherService;
 
@@ -118,5 +119,42 @@ public class TeacherController {
             redirectAttributes.addAttribute("error", message);
         }
         return "redirect:/teachers";
+    }
+
+    @GetMapping("/{id}/subjects")
+    public String findSubjects(@PathVariable Long id, Model model) {
+        String message;
+        try {
+            model.addAttribute("teacher", teacherService.findById(id).orElseThrow(TeacherNotFoundException::new));
+            model.addAttribute("subjects", subjectService.findAll());
+        } catch (TeacherNotFoundException e) {
+            message = "Преподаватель с id: " + id + " не найден(-а)!";
+            model.addAttribute("error", message);
+        }
+
+        return "teachers/find-subjects";
+    }
+
+    @PostMapping("/{id}/subjects")
+    public String addSubjects(@PathVariable Long id, @ModelAttribute("subject-title") String subjectTitle, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            Teacher teacher = teacherService.findById(id).orElseThrow(TeacherNotFoundException::new);
+            Subject subject = subjectService.findSubjectByTitle(subjectTitle).orElseThrow(SubjectNotFoundException::new);
+            teacherService.addTeacherSubject(
+                    TeacherSubject.builder()
+                            .teacher(teacher)
+                            .subject(subject)
+                            .build());
+
+        } catch (TeacherNotFoundException e) {
+            message = "Преподаватель с id: " + id + " не найден(-а)!";
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (SubjectNotFoundException e) {
+            message = "Предмет с названием: " + subjectTitle + " не найден!";
+            redirectAttributes.addFlashAttribute("message", message);
+        }
+
+        return "redirect:/teachers/" + id + "/subjects";
     }
 }

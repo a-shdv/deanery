@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: Предметы преподавателя</title>
+</head>
+<body>
+<h2>Список предметов преподавателя</h2>
+<div th:if="${error}" th:text="${error}" style="color: red"></div>
+<div th:if="${success}" th:text="${success}" style="color: green"></div>
+<main>
+    <!--Выбор предмета-->
+    <tr>
+        <td><label for="subject-title">Предмет</label></td>
+        <td>
+            <form th:action="@{/teachers/{id}/subjects(id=${teacher.id})}" th:method="post">
+                <select name="subject-title" id="subject-title" th:object="${subjectDto}">
+                    <option th:each="subject : ${subjects}" th:value="${subject.title}" th:text="${subject.title}"></option>
+                </select>
+                <input type="submit" value="Привязать предмет">
+            </form>
+        </td>
+    </tr>
+
+    <!--Предметы-->
+    <h3>Предметы</h3>
+    <tr>
+        <!--Пустой список-->
+        <div th:if="${#lists.isEmpty(teacher.teacherSubjects)}">
+            <span th:text="${'Список предметов преподавателя пуст!'}" style="color: orange"></span>
+        </div>
+        <!--Список предметов преподавателя-->
+        <div th:unless="${#lists.isEmpty(teacher.teacherSubjects)}" th:each="teacherSubject : ${teacher.teacherSubjects}">
+            <ul>
+                <li><a th:href="@{/subjects/{id}(id=${teacherSubject.subject.id})}" th:text="${teacherSubject.subject.title}"></a></li>
+            </ul>
+        </div>
+
+    </tr>
+    <br>
+    <a href="/">На главную</a>
+</main>
+</body>
+</html>

@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Деканат: предметы</title>
+    <title>Деканат: Преподаватели</title>
 </head>
 <body>
 <h2>Список преподавателей</h2>
@@ -46,20 +46,25 @@
 
     <div th:unless="${#lists.isEmpty(teachers)}">
         <table border="1">
+
             <thead>
-            <tr>ФИО</tr>
-            <tr>Действие</tr>
+            <th>ФИО</th>
+            <th>Действие</th>
             </thead>
+
             <tbody th:each="teacher : ${teachers}" th:object="${teacher}">
             <tr>
-                <td><a th:href="@{/teachers/{id}(id=*{id})}" th:text="|*{lastName} *{firstName} *{patronymicName}|"></a>
-                </td>
+                <!--ФИО-->
+                <td><a th:href="@{/teachers/{id}(id=*{id})}" th:text="|*{lastName} *{firstName} *{patronymicName}|"></a></td>
+                <!--Действие-->
                 <td>
+                    <a th:href="@{/teachers/{id}/subjects(id=${teacher.id})}">Предметы</a>
                     <form th:action="@{/teachers/{id}(id=${teacher.id})}" th:method="delete">
                         <input type="submit" value="Удалить">
                     </form>
                 </td>
             </tr>
+
             </tbody>
         </table>
     </div>
