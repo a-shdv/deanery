@@ -21,9 +21,9 @@ public class Teacher {
     private String lastName;
     private String patronymicName;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TeacherSubject> teacherSubjects;
+    @OneToOne(mappedBy = "teacher", cascade = CascadeType.ALL)
+    private Timetable timetable;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Timetable> timetables;
+    private List<TeacherSubject> teacherSubjects;
 }

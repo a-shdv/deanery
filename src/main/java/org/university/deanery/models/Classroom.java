@@ -18,6 +18,9 @@ public class Classroom {
     @Column(unique = true)
     private Integer classroomNo;
 
+    @OneToOne(mappedBy = "classroom", cascade = CascadeType.ALL)
+    private Timetable timetable;
+
     public Classroom(Integer classroomNo) {
         this.classroomNo = classroomNo;
     }

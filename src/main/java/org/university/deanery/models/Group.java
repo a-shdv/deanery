@@ -21,6 +21,10 @@ public class Group {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "timetable_id")
+    private Timetable timetable;
+
     public Group(String title, User user) {
         this.title = title;
         this.user = user;

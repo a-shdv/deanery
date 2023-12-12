@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.university.deanery.dtos.SubjectDto;
 import org.university.deanery.dtos.TeacherDto;
 import org.university.deanery.exceptions.*;
 import org.university.deanery.models.Subject;

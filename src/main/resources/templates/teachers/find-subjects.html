@@ -17,7 +17,7 @@
         <td><label for="subject-title">Предмет</label></td>
         <td>
             <form th:action="@{/teachers/{id}/subjects(id=${teacher.id})}" th:method="post">
-                <select name="subject-title" id="subject-title" th:object="${subjectDto}">
+                <select name="subject-title" id="subject-title">
                     <option th:each="subject : ${subjects}" th:value="${subject.title}"
                             th:text="${subject.title}"></option>
                 </select>
