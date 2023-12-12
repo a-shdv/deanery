@@ -19,6 +19,10 @@ public class ClassroomService {
         this.classroomRepository = classroomRepository;
     }
 
+    public void save(Classroom classroom) {
+        classroomRepository.save(classroom);
+    }
+
     public List<Classroom> findAll() {
         return classroomRepository.findAll();
     }
@@ -30,11 +34,6 @@ public class ClassroomService {
     public Optional<Classroom> findClassroomByClassroomNo(Integer classroomNo) {
         return Optional.ofNullable(classroomRepository.findClassroomByClassroomNo(classroomNo)).get();
     }
-
-    public void save(Classroom classroom) {
-        classroomRepository.save(classroom);
-    }
-
     public void updateById(Long id, ClassroomDto classroomDto) throws ClassroomNotFoundException {
         Classroom classroom = classroomRepository.findById(id).get();
         classroom.setClassroomNo(classroomDto.getClassroomNo());

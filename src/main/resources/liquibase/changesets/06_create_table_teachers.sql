@@ -1,5 +1,7 @@
 create table teachers
 (
     id   bigserial primary key not null,
-    name varchar(255)
+    first_name varchar(255),
+    last_name varchar(255),
+    patronymic_name varchar(255)
 );

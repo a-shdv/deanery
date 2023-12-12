@@ -1,10 +1,7 @@
 package org.university.deanery.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "classrooms")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Classroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +17,9 @@ public class Classroom {
 
     @Column(unique = true)
     private Integer classroomNo;
+
+    @OneToOne(mappedBy = "classroom", cascade = CascadeType.ALL)
+    private Timetable timetable;
 
     public Classroom(Integer classroomNo) {
         this.classroomNo = classroomNo;

@@ -2,6 +2,7 @@ package org.university.deanery.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,6 +12,7 @@ import java.util.Collection;
 @Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Role implements GrantedAuthority {
 
     @Id

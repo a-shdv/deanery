@@ -44,11 +44,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -60,6 +55,11 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByUsername(username);
+    }
+
+    public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
 //    @EventListener(ApplicationReadyEvent.class)

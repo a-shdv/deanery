@@ -9,6 +9,8 @@ public record ClassroomDto(@Getter Integer classroomNo) {
     }
 
     public static Classroom toClassroom(ClassroomDto classroomDto) {
-        return new Classroom(classroomDto.classroomNo);
+        return Classroom.builder()
+                .classroomNo(classroomDto.classroomNo())
+                .build();
     }
 }
