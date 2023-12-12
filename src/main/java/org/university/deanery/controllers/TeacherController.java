@@ -7,25 +7,28 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.SubjectDto;
 import org.university.deanery.dtos.TeacherDto;
-import org.university.deanery.exceptions.SubjectNotFoundException;
-import org.university.deanery.exceptions.TeacherAlreadyExistsException;
-import org.university.deanery.exceptions.TeacherNotFoundException;
+import org.university.deanery.exceptions.*;
 import org.university.deanery.models.Subject;
 import org.university.deanery.models.Teacher;
 import org.university.deanery.models.TeacherSubject;
 import org.university.deanery.services.SubjectService;
 import org.university.deanery.services.TeacherService;
+import org.university.deanery.services.TeacherSubjectService;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
     private final TeacherService teacherService;
     private final SubjectService subjectService;
+    private final TeacherSubjectService teacherSubjectService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, SubjectService subjectService) {
+    public TeacherController(TeacherService teacherService, SubjectService subjectService, TeacherSubjectService teacherSubjectService) {
         this.teacherService = teacherService;
         this.subjectService = subjectService;
+        this.teacherSubjectService = teacherSubjectService;
     }
 
     @PostMapping
@@ -124,7 +127,10 @@ public class TeacherController {
     @GetMapping("/{id}/subjects")
     public String findSubjects(@PathVariable Long id, Model model) {
         String message;
+        String error = (String) model.getAttribute("error");
         try {
+            if (error != null)
+                model.addAttribute(error);
             model.addAttribute("teacher", teacherService.findById(id).orElseThrow(TeacherNotFoundException::new));
             model.addAttribute("subjects", subjectService.findAll());
         } catch (TeacherNotFoundException e) {
@@ -137,11 +143,15 @@ public class TeacherController {
 
     @PostMapping("/{id}/subjects")
     public String addSubjects(@PathVariable Long id, @ModelAttribute("subject-title") String subjectTitle, RedirectAttributes redirectAttributes) {
+        Optional<TeacherSubject> teacherSubject = Optional.empty();
         String message;
         try {
             Teacher teacher = teacherService.findById(id).orElseThrow(TeacherNotFoundException::new);
             Subject subject = subjectService.findSubjectByTitle(subjectTitle).orElseThrow(SubjectNotFoundException::new);
-            teacherService.addTeacherSubject(
+            teacherSubject = teacherSubjectService.findTeacherSubjectByTeacherAndSubject(teacher, subject);
+            if (teacherSubject.isPresent())
+                throw new TeacherSubjectAlreadyExistsException();
+            teacherSubjectService.addTeacherSubject(
                     TeacherSubject.builder()
                             .teacher(teacher)
                             .subject(subject)
@@ -149,12 +159,40 @@ public class TeacherController {
 
         } catch (TeacherNotFoundException e) {
             message = "Преподаватель с id: " + id + " не найден(-а)!";
-            redirectAttributes.addFlashAttribute("message", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (SubjectNotFoundException e) {
             message = "Предмет с названием: " + subjectTitle + " не найден!";
-            redirectAttributes.addFlashAttribute("message", message);
+            redirectAttributes.addFlashAttribute("error", message);
+        } catch (TeacherSubjectAlreadyExistsException e) {
+            message = "Связь преподавателя с id: " + teacherSubject.get().getTeacher().getId() + " и предметом с id: " +
+                    teacherSubject.get().getSubject().getId() + " уже существует!";
+            redirectAttributes.addFlashAttribute("error", message);
         }
 
         return "redirect:/teachers/" + id + "/subjects";
+    }
+
+    @DeleteMapping("/{teacherId}/subjects/{subjectId}")
+    public String deleteSubject(@PathVariable Long teacherId, @PathVariable Long subjectId, RedirectAttributes redirectAttributes) {
+        String message;
+        TeacherSubject teacherSubject = null;
+        try {
+            Teacher teacher = teacherService.findById(teacherId).orElseThrow(TeacherNotFoundException::new);
+            Subject subject = subjectService.findById(subjectId).orElseThrow(SubjectNotFoundException::new);
+            teacherSubject = teacherSubjectService.findTeacherSubjectByTeacherAndSubject(teacher, subject)
+                    .orElseThrow(TeacherSubjectNotFoundException::new);
+            teacherSubjectService.deleteTeacherSubject(teacherSubject);
+        } catch (TeacherNotFoundException e) {
+            message = "Преподаватель с id: " + teacherId + " не найден(-а)!";
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (SubjectNotFoundException e) {
+            message = "Предмет с id: " + subjectId + " не найден!";
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (TeacherSubjectNotFoundException e) {
+            message = "Связь преподавателя с id: " + teacherSubject.getTeacher().getId() + " и предметом с id: " +
+                    teacherSubject.getSubject().getId() + " уже существует!";;
+            redirectAttributes.addFlashAttribute("message", message);
+        }
+        return "redirect:/teachers/" + teacherId + "/subjects";
     }
 }

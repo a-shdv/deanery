@@ -15,12 +15,10 @@ import java.util.Optional;
 @Service
 public class TeacherService {
     private final TeacherRepository teacherRepository;
-    private final TeacherSubjectRepository teacherSubjectRepository;
 
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository, TeacherSubjectRepository teacherSubjectRepository) {
+    public TeacherService(TeacherRepository teacherRepository) {
         this.teacherRepository = teacherRepository;
-        this.teacherSubjectRepository = teacherSubjectRepository;
     }
 
     public void save(Teacher teacher) {
@@ -52,10 +50,6 @@ public class TeacherService {
 
     public void deleteById(Long id) {
         teacherRepository.deleteById(id);
-    }
-
-    public void addTeacherSubject(TeacherSubject teacherSubject) {
-        teacherSubjectRepository.save(teacherSubject);
     }
 
     public List<TeacherSubject> findAllTeacherSubjects(Teacher teacher) {
