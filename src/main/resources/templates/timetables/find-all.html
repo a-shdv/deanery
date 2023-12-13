@@ -97,6 +97,7 @@
     <div th:if="${#lists.isEmpty(timetables)}" th:text="'Данные о расписании отсутствуют!'" style="color: orange"></div>
     <table border="1" th:unless="${#lists.isEmpty(timetables)}">
         <thead>
+        <th>ID</th>
         <th>Группа</th>
         <th>Предмет</th>
         <th>Преподаватель</th>
@@ -107,6 +108,7 @@
         </thead>
         <tbody th:each="timetable : ${timetables}" th:object="${timetable}">
         <tr>
+            <td th:text="*{id}"></td>
             <td th:text="*{group.title}"></td>
             <td th:text="*{subject.title}"></td>
             <td th:text="|*{teacher.lastName} *{teacher.firstName} *{teacher.patronymicName}|"></td>
@@ -135,11 +137,14 @@
                 </th:block>
             </td>
             <td>
+                <button>
+                    <a th:href="@{/timetables/{id}(id=${timetable.id})}" style="text-decoration: none; color: black">Изменить</a>
+                </button>
                 <form th:action="@{/timetables/{id}(id=${timetable.id})}" th:method="delete">
                     <input type="submit" value="Удалить ">
                 </form>
             </td>
-        </tr>
+
         </tbody>
     </table>
     <br>

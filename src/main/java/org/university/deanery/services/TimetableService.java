@@ -2,6 +2,7 @@ package org.university.deanery.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.deanery.dtos.TimetableDto;
 import org.university.deanery.models.Classroom;
 import org.university.deanery.models.Timetable;
 import org.university.deanery.models.enums.DayOfWeek;
@@ -38,6 +39,16 @@ public class TimetableService {
                                                                                      TimeOfClass timeOfClass) {
         return Optional.ofNullable(timetableRepository
                 .findTimetableByClassroom_IdAndDayOfWeekAndTimeOfClass(classroomId, dayOfWeek, timeOfClass)).get();
+    }
+
+    public void updateById(Long id, TimetableDto timetableDto) {
+        Timetable timetable = timetableRepository.findById(id).get();
+        timetable.setGroup(timetableDto.getGroup());
+        timetable.setClassroom(timetableDto.getClassroom());
+        timetable.setTeacher(timetableDto.getTeacher());
+        timetable.setSubject(timetableDto.getSubject());
+        timetable.setDayOfWeek(DayOfWeek.toDayOfWeek(timetableDto.getDayOfWeekId()));
+        timetable.setTimeOfClass(TimeOfClass.toTimeOfClass(timetableDto.getTimeOfClassId()));
     }
 
     public void delete(Timetable timetable) {
