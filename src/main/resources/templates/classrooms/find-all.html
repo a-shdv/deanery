@@ -17,7 +17,8 @@
             <!--Номер аудитории-->
             <tr>
                 <td><label for="classroomNo">Номер аудитории</label></td>
-                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории" required></td>
+                <td><input type="number" id="classroomNo" name="classroomNo" placeholder="Введите номер аудитории"
+                           required></td>
             </tr>
             <!--Создать-->
             <tr>
@@ -32,9 +33,13 @@
     </div>
 
     <div th:unless="${#lists.isEmpty(classrooms)}">
-        <table th:each="classroom : ${classrooms}" th:object="${classroom}" border="1">
+        <table border="1">
+            <thead>
+            <th>Аудитория</th>
+            <th>Действие</th>
+            </thead>
+            <tbody th:each="classroom : ${classrooms}" th:object="${classroom}">
             <tr>
-                <td>Номер аудитории</td>
                 <td><a th:href="@{/classrooms/{id}(id=*{id})}" th:text="*{classroomNo}"></a></td>
                 <td>
                     <form th:action="@{/classrooms/{id}(id=${classroom.getId()})}" th:method="delete">
@@ -42,6 +47,8 @@
                     </form>
                 </td>
             </tr>
+            </tbody>
+
         </table>
     </div>
     <br>

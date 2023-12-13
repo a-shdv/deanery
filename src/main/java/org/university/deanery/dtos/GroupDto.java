@@ -14,7 +14,6 @@ public record GroupDto(@Getter String title, @Getter User user) {
     public static Group toGroup(GroupDto groupDto) {
         return Group.builder()
                 .title(groupDto.title)
-                .user(groupDto.user)
                 .build();
     }
 }

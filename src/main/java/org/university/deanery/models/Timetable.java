@@ -2,8 +2,8 @@ package org.university.deanery.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
+import org.university.deanery.models.enums.DayOfWeek;
+import org.university.deanery.models.enums.TimeOfClass;
 
 @Entity
 @Table(name = "timetables")
@@ -17,18 +17,23 @@ public class Timetable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private List<Group> group;
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    private Group group;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "subject_id", referencedColumnName = "id")
-    private Subject subject;
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "classroom_id", referencedColumnName = "id")
+    private Classroom classroom;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "classroom_id", referencedColumnName = "id")
-    private Classroom classroom;
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    private Subject subject;
+
+    private DayOfWeek dayOfWeek;
+
+    private TimeOfClass timeOfClass;
 }

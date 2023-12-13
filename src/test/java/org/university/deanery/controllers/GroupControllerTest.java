@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
+import org.university.deanery.models.User;
 import org.university.deanery.services.GroupService;
 
 import java.util.Optional;

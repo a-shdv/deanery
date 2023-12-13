@@ -1,5 +1,6 @@
 package org.university.deanery.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.deanery.dtos.GroupDto;
@@ -7,6 +8,7 @@ import org.university.deanery.exceptions.ClassroomNotFoundException;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Classroom;
 import org.university.deanery.models.Group;
+import org.university.deanery.models.User;
 import org.university.deanery.repositories.GroupRepository;
 
 import java.util.List;

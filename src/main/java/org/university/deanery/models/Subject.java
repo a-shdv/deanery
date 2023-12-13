@@ -19,8 +19,8 @@ public class Subject {
 
     private String title;
 
-    @OneToOne(mappedBy = "subject", cascade = CascadeType.ALL)
-    private Timetable timetable;
+//    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Timetable> timetable;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TeacherSubject> teacherSubjects;

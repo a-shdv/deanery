@@ -1,6 +1,7 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,9 @@ import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupAlreadyExistsException;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
+import org.university.deanery.models.User;
 import org.university.deanery.services.GroupService;
+import org.university.deanery.services.UserService;
 
 import java.util.Optional;
 
@@ -40,7 +43,7 @@ public class GroupController {
     }
 
     @GetMapping
-    public String findAll(@ModelAttribute("groupDto") GroupDto groupDto, Model model) {
+    public String findAll(@AuthenticationPrincipal User user, @ModelAttribute("groupDto") GroupDto groupDto, Model model) {
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
