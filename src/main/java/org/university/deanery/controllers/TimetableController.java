@@ -8,14 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.university.deanery.models.DayOfWeek;
+import org.university.deanery.models.enums.DayOfWeek;
 import org.university.deanery.models.Group;
 import org.university.deanery.models.Timetable;
+import org.university.deanery.models.enums.TimeOfClass;
 import org.university.deanery.services.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 @RequestMapping("/timetables")
@@ -41,6 +38,7 @@ public class TimetableController {
         model.addAttribute("subjects", subjectService.findAll());
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("classrooms", classroomService.findAll());
+        model.addAttribute("timetables", timetableService.findAll());
         return "timetables/find-all";
     }
 
@@ -49,7 +47,8 @@ public class TimetableController {
                        @ModelAttribute("subject-id") Long subjectId,
                        @ModelAttribute("teacher-id") Long teacherId,
                        @ModelAttribute("classroom-id") Long classroomId,
-                       @ModelAttribute("day-of-week-id") int dayOfWeekId) {
+                       @ModelAttribute("day-of-week-id") int dayOfWeekId,
+                       @ModelAttribute("time-of-class-id") int timeOfClassId) {
         Group group = groupService.findById(groupId).get();
         Timetable timetable = Timetable.builder()
                 .group(group)
@@ -57,6 +56,7 @@ public class TimetableController {
                 .teacher(teacherService.findById(teacherId).get())
                 .classroom(classroomService.findById(classroomId).get())
                 .dayOfWeek(DayOfWeek.toDayOfWeek(dayOfWeekId))
+                .timeOfClass(TimeOfClass.toTimeOfClass(timeOfClassId))
                 .build();
         timetableService.save(timetable);
         return "redirect:/timetables";

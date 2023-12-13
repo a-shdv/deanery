@@ -68,10 +68,70 @@
                     </select>
                 </td>
             </tr>
+            <!--Время пары-->
+            <tr>
+                <td><label for="time-of-class-id">Время пары</label></td>
+                <td>
+                    <select name="time-of-class-id" id="time-of-class-id">
+                        <option value="1">1: 08:30-09:50</option>
+                        <option value="2">2: 10:00-11:20</option>
+                        <option value="3">3: 11:30-12:50</option>
+                        <option value="4">4: 13:30-14:50</option>
+                        <option value="5">5: 15:00-16:20</option>
+                        <option value="6">6: 16:30-17:50</option>
+                        <option value="7">7: 18:00-19:20</option>
+                        <option value="8">8: 19:30-21:00</option>
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <td><input type="submit" value="Добавить расписание"></td>
             </tr>
         </form>
+    </table>
+    <br>
+    <table border="1">
+        <thead>
+        <th>№</th>
+        <th>Группа</th>
+        <th>Предмет</th>
+        <th>Преподаватель</th>
+        <th>Аудитория</th>
+        <th>День недели</th>
+        <th>Время пары</th>
+        </thead>
+        <tbody th:each="timetable : ${timetables}" th:object="${timetable}">
+        <tr>
+            <td th:text="*{id}"></td>
+            <td th:text="*{group.title}"></td>
+            <td th:text="*{subject.title}"></td>
+            <td th:text="|*{teacher.lastName} *{teacher.firstName} *{teacher.patronymicName}|"></td>
+            <td th:text="*{classroom.classroomNo}"></td>
+            <td>
+                <th:block th:switch="*{dayOfWeek.getCode()}">
+                    <div th:case="0" th:text="'Воскресенье'"></div>
+                    <div th:case="1" th:text="'Понедельник'"></div>
+                    <div th:case="2"  th:text="'Вторник'"></div>
+                    <div th:case="3"  th:text="'Среда'"></div>
+                    <div th:case="4"  th:text="'Четверг'"></div>
+                    <div th:case="5"  th:text="'Пятница'"></div>
+                    <div th:case="6"  th:text="'Суббота'"></div>
+                </th:block>
+            </td>
+            <td>
+                <th:block th:switch="*{timeOfClass.getCode()}">
+                    <div th:case="1" th:text="'1: 08:30-09:50'"></div>
+                    <div th:case="2" th:text="'2: 10:00-11:20'"></div>
+                    <div th:case="3"  th:text="'3: 11:30-12:50'"></div>
+                    <div th:case="4"  th:text="'4: 13:30-14:50'"></div>
+                    <div th:case="5"  th:text="'5: 15:00-16:20'"></div>
+                    <div th:case="6"  th:text="'6: 16:30-17:50'"></div>
+                    <div th:case="7"  th:text="'7: 18:00-19:20'"></div>
+                    <div th:case="8"  th:text="'8: 19:30-21:00'"></div>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
     </table>
     <br>
     <button onclick="history.back()">Назад</button>

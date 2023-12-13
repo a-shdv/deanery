@@ -2,9 +2,8 @@ package org.university.deanery.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
-import java.util.Set;
+import org.university.deanery.models.enums.DayOfWeek;
+import org.university.deanery.models.enums.TimeOfClass;
 
 @Entity
 @Table(name = "timetables")
@@ -35,4 +34,6 @@ public class Timetable {
     private Subject subject;
 
     private DayOfWeek dayOfWeek;
+
+    private TimeOfClass timeOfClass;
 }
