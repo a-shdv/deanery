@@ -33,18 +33,25 @@
 
     <div th:unless="${#lists.isEmpty(groups)}">
         <table border="1">
-            <tr th:each="group : ${groups}" th:object="${group}">
-                <td>Номер аудитории</td>
-                <td><a th:href="@{/groups/{id}(id=*{id})}" th:text="*{title}"></a></td>
+            <thead>
+            <th>Группа</th>
+            <th>Действие</th>
+            </thead>
+            <tbody th:each="group : ${groups}" th:object="${group}">
+            <tr>
+                 <td><a th:href="@{/groups/{id}(id=*{id})}" th:text="*{title}"></a></td>
                 <td>
                     <form th:action="@{/groups/{id}(id=${group.getId()})}" th:method="delete">
                         <input type="submit" value="Удалить">
                     </form>
                 </td>
             </tr>
+            </tbody>
+
         </table>
     </div>
     <br>
     <a href="/">На главную</a>
-</main></body>
+</main>
+</body>
 </html>

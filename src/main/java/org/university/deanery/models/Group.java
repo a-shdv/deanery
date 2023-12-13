@@ -20,12 +20,7 @@ public class Group {
 
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public Group(String title, User user) {
+    public Group(String title) {
         this.title = title;
-        this.user = user;
     }
 }

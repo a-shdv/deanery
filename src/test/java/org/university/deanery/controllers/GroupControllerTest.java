@@ -44,9 +44,8 @@ public class GroupControllerTest {
 
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.empty());
 
-        User user = new User("test", "test", "test");
         // Act
-        String result = groupController.save(user, groupDto, model);
+        String result = groupController.save(groupDto, model);
 
         // Assert
         assertEquals("groups/find-all", result);
@@ -64,8 +63,7 @@ public class GroupControllerTest {
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.of(new Group()));
 
         // Act
-        User user = new User("test", "test", "test");
-        String result = groupController.save(user, groupDto, model);
+        String result = groupController.save(groupDto, model);
 
         // Assert
         assertEquals("groups/find-all", result);

@@ -39,10 +39,6 @@ public class GroupService {
         return groupRepository.findGroupByTitle(title);
     }
 
-    public Optional<List<Group>> findGroupsByUser(User user) {
-        return Optional.ofNullable(groupRepository.findGroupsByUser(user)).get();
-    }
-
     public void updateById(Long id, GroupDto groupDto) {
         Group group = groupRepository.findById(id).get();
         group.setTitle(groupDto.getTitle());

@@ -27,14 +27,12 @@ public class GroupController {
     }
 
     @PostMapping
-    public String save(@AuthenticationPrincipal User user, @ModelAttribute("groupDto") GroupDto groupDto, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("groupDto") GroupDto groupDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
             if (groupService.findGroupByTitle(groupDto.getTitle()).isPresent())
                 throw new GroupAlreadyExistsException();
-            Group group = GroupDto.toGroup(groupDto);
-            group.setUser(user);
-            groupService.save(group);
+            groupService.save(GroupDto.toGroup(groupDto));
             message = "Группа " + groupDto.getTitle() + " успешно создана!";
             redirectAttributes.addFlashAttribute("success", message);
         } catch (GroupAlreadyExistsException e) {
@@ -52,7 +50,7 @@ public class GroupController {
             model.addAttribute("success", success);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("groups", groupService.findGroupsByUser(user).get());
+        model.addAttribute("groups", groupService.findAll());
         return "groups/find-all";
     }
 
