@@ -26,6 +26,8 @@ public class User implements UserDetails {
 
     private String password;
 
+    private boolean accountNonLocked;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
@@ -51,7 +53,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override

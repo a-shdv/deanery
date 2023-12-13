@@ -3,7 +3,8 @@ package org.university.deanery.dtos;
 import lombok.Getter;
 import org.university.deanery.models.User;
 
-public record SignUpDto(@Getter String email, @Getter String username, @Getter String password, @Getter String passwordConfirm) {
+public record SignUpDto(@Getter String email, @Getter String username, @Getter String password,
+                        @Getter String passwordConfirm) {
     public SignUpDto(String email, String username, String password, String passwordConfirm) {
         this.email = email;
         this.username = username;
@@ -17,5 +18,5 @@ public record SignUpDto(@Getter String email, @Getter String username, @Getter S
                 .username(dto.getUsername())
                 .password(dto.getPassword())
                 .build();
-            }
+    }
 }

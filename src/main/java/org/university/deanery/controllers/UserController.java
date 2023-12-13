@@ -1,11 +1,14 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.ChangePasswordDto;
 import org.university.deanery.dtos.SignUpDto;
 import org.university.deanery.exceptions.*;
@@ -25,6 +28,7 @@ public class UserController {
     public String signIn() {
         return "users/sign-in";
     }
+
     @GetMapping("/sign-up")
     public String signUp() {
         return "users/sign-up";
@@ -34,7 +38,7 @@ public class UserController {
     public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) {
         User user = (User) userService.loadUserByUsername(signUpDto.getUsername());
         String message = "";
-        model.asMap().clear();
+//        model.asMap().clear();
         try {
             if (userService.findUserByEmail(signUpDto.getEmail()) != null)
                 throw new UserEmailAlreadyExistsException();
@@ -79,9 +83,9 @@ public class UserController {
         try {
             User user = userService.findUserByEmail(changePasswordDto.getEmail());
             if (userService.findUserByEmail(changePasswordDto.getEmail()) == null)
-                throw new UserEmailNotExistsException();
+                throw new UserEmailNotFoundException();
             if (user == null)
-                throw new UserUsernameNotExistsException();
+                throw new UserUsernameNotFoundException();
             if (changePasswordDto.passwordOld().equals(changePasswordDto.passwordNew()))
                 throw new PasswordMustBeNewException();
             if (!changePasswordDto.passwordNew().equals(changePasswordDto.passwordConfirm()))
@@ -91,10 +95,10 @@ public class UserController {
             userService.changeUserPassword(user, changePasswordDto.getPasswordNew());
             message = "Пароль успешно изменен!";
             model.addAttribute("success", message);
-        } catch (UserEmailNotExistsException e) {
+        } catch (UserEmailNotFoundException e) {
             message = "Пользователь с электронной почтой " + changePasswordDto.email() + " не найден!";
             model.addAttribute("error", message);
-        } catch (UserUsernameNotExistsException e) {
+        } catch (UserUsernameNotFoundException e) {
             message = "Пользователь с именем " + changePasswordDto.username() + " не найден!";
             model.addAttribute("error", message);
         } catch (PasswordsMismatchException ex) {
@@ -108,5 +112,32 @@ public class UserController {
             model.addAttribute("error", message);
         }
         return "users/change-password";
+    }
+
+    @GetMapping("/find-all-blocked")
+    public String findAllBlocked(Model model) {
+        String error = (String) model.getAttribute("error");
+        String success = (String) model.getAttribute("success");
+        if (success != null)
+            model.addAttribute("success", success);
+        if (error != null)
+            model.addAttribute("error", error);
+        model.addAttribute("users", userService.findAll());
+        return "users/find-all-blocked";
+    }
+
+    @PatchMapping("/{id}")
+    public String setAccountNonLocked(@PathVariable Long id, @ModelAttribute("status") boolean status, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            User user = userService.findUserById(id).orElseThrow(UserNotFoundException::new);
+            userService.setAccountNonLocked(user, status);
+            message = "Пользователь с id: " + id + " изменен!";
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (UserNotFoundException e) {
+            message = "Пользователь с id: " + id + " не найден!";
+            redirectAttributes.addFlashAttribute("error", message);
+        }
+        return "redirect:/find-all-blocked";
     }
 }

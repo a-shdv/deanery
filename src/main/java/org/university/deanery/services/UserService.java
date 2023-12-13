@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -41,6 +42,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(User user) {
+        user.setAccountNonLocked(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singletonList(roleRepository.findRoleByTitle("USER")));
         userRepository.save(user);
@@ -54,6 +56,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
+    public Optional<User> findUserById(Long id) {
+        return Optional.ofNullable(userRepository.findById(id)).get();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByUsername(username);
@@ -61,6 +67,11 @@ public class UserService implements UserDetailsService {
 
     public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public void setAccountNonLocked(User user, boolean status) {
+        user.setAccountNonLocked(status);
         userRepository.save(user);
     }
 
