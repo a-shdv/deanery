@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,9 @@ public class UserService implements UserDetailsService {
 
     public void saveUser(User user) {
         user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPasswordLastChanged(LocalDateTime.now());
         user.setRoles(Collections.singletonList(roleRepository.findRoleByTitle("USER")));
         userRepository.save(user);
     }
@@ -67,6 +70,8 @@ public class UserService implements UserDetailsService {
 
     public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
         user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPasswordLastChanged(LocalDateTime.now());
+        user.setCredentialsNonExpired(true);
         userRepository.save(user);
     }
 

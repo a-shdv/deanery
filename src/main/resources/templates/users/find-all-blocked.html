@@ -18,6 +18,8 @@
         <th>Имя пользователя</th>
         <th>Статус блокировки</th>
         <th>Действие</th>
+        <th>Посл. смена пароля</th>
+        <th>Действие</th>
         </thead>
         <tbody th:each="user : ${users}" th:object="${user}">
         <tr>
@@ -30,7 +32,7 @@
             <!--Статус блокировки-->
             <td th:if="*{accountNonLocked}" th:text="'Разблокирован'"></td>
             <td th:unless="*{accountNonLocked}" th:text="'Заблокирован'"></td>
-
+            <!--Действие-->
             <td>
                 <form th:action="@{/{id}(id=*{id})}" th:method="patch">
 
@@ -45,6 +47,9 @@
                     </div>
                 </form>
             </td>
+
+            <!--Последняя смена пароля-->
+            <td th:text="|*{passwordLastChanged.dayOfMonth}.*{passwordLastChanged.getMonthValue()}.*{passwordLastChanged.getYear()}|"></td>
         </tr>
         </tbody>
     </table>

@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,8 +27,9 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
-
+    private LocalDateTime passwordLastChanged;
     private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -58,6 +61,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
+        if (passwordLastChanged != null) {
+            LocalDateTime now = LocalDateTime.now();
+            long daysSinceLastChange = ChronoUnit.DAYS.between(passwordLastChanged, now);
+            return daysSinceLastChange <= 30;
+        }
         return true;
     }
 
