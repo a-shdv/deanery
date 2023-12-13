@@ -92,7 +92,6 @@
     <br>
     <table border="1">
         <thead>
-        <th>№</th>
         <th>Группа</th>
         <th>Предмет</th>
         <th>Преподаватель</th>
@@ -102,7 +101,6 @@
         </thead>
         <tbody th:each="timetable : ${timetables}" th:object="${timetable}">
         <tr>
-            <td th:text="*{id}"></td>
             <td th:text="*{group.title}"></td>
             <td th:text="*{subject.title}"></td>
             <td th:text="|*{teacher.lastName} *{teacher.firstName} *{teacher.patronymicName}|"></td>

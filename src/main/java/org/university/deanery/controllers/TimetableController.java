@@ -14,6 +14,9 @@ import org.university.deanery.models.Timetable;
 import org.university.deanery.models.enums.TimeOfClass;
 import org.university.deanery.services.*;
 
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/timetables")
 public class TimetableController {
@@ -38,7 +41,10 @@ public class TimetableController {
         model.addAttribute("subjects", subjectService.findAll());
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("classrooms", classroomService.findAll());
-        model.addAttribute("timetables", timetableService.findAll());
+        model.addAttribute("timetables", timetableService.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Timetable::getDayOfWeek).thenComparing(Timetable::getTimeOfClass))
+                .collect(Collectors.toList()));
         return "timetables/find-all";
     }
 
