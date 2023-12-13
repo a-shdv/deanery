@@ -13,6 +13,7 @@ import org.university.deanery.models.Timetable;
 import org.university.deanery.services.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -49,10 +50,8 @@ public class TimetableController {
                        @ModelAttribute("classroom-id") Long classroomId,
                        Model model) {
         Group group = groupService.findById(groupId).get();
-        List<Group> groups = new ArrayList<>();
-        groups.add(group);
         Timetable timetable = Timetable.builder()
-                .group(groups)
+                .group(group)
                 .subject(subjectService.findById(subjectId).get())
                 .teacher(teacherService.findById(teacherId).get())
                 .classroom(classroomService.findById(classroomId).get())

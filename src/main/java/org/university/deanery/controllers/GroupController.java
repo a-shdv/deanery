@@ -1,6 +1,7 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupAlreadyExistsException;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
+import org.university.deanery.models.User;
 import org.university.deanery.services.GroupService;
 
 import java.util.Optional;
@@ -24,12 +26,14 @@ public class GroupController {
     }
 
     @PostMapping
-    public String save(@ModelAttribute("groupDto") GroupDto groupDto, RedirectAttributes redirectAttributes) {
+    public String save(@AuthenticationPrincipal User user, @ModelAttribute("groupDto") GroupDto groupDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
             if (groupService.findGroupByTitle(groupDto.getTitle()).isPresent())
                 throw new GroupAlreadyExistsException();
-            groupService.save(GroupDto.toGroup(groupDto));
+            Group group = GroupDto.toGroup(groupDto);
+            group.setUser(user);
+            groupService.save(group);
             message = "Группа " + groupDto.getTitle() + " успешно создана!";
             redirectAttributes.addFlashAttribute("success", message);
         } catch (GroupAlreadyExistsException e) {
