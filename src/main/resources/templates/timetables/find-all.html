@@ -12,6 +12,7 @@
 <div th:if="${error}" th:text="${error}" style="color: red"></div>
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
+    <!--Добавление расписания-->
     <table>
         <form th:action="@{/timetables}" th:method="post">
             <!--Группа-->
@@ -92,7 +93,9 @@
         </form>
     </table>
     <br>
-    <table border="1">
+    <!--Список расписаний-->
+    <div th:if="${#lists.isEmpty(timetables)}" th:text="'Данные о расписании отсутствуют!'" style="color: orange"></div>
+    <table border="1" th:unless="${#lists.isEmpty(timetables)}">
         <thead>
         <th>Группа</th>
         <th>Предмет</th>

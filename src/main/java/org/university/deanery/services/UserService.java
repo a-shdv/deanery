@@ -2,6 +2,7 @@ package org.university.deanery.services;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.university.deanery.exceptions.PasswordLengthException;
+import org.university.deanery.models.Group;
 import org.university.deanery.models.User;
 import org.university.deanery.repositories.RoleRepository;
 import org.university.deanery.repositories.UserRepository;

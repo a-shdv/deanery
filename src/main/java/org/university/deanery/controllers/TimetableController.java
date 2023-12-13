@@ -7,9 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.exceptions.TimetableAlreadyExistsException;
-import org.university.deanery.models.enums.DayOfWeek;
-import org.university.deanery.models.Group;
 import org.university.deanery.models.Timetable;
+import org.university.deanery.models.enums.DayOfWeek;
 import org.university.deanery.models.enums.TimeOfClass;
 import org.university.deanery.services.*;
 
@@ -101,4 +100,6 @@ public class TimetableController {
         }
         return "redirect:/timetables";
     }
+
+
 }

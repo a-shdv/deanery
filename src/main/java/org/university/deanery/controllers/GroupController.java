@@ -12,6 +12,7 @@ import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
 import org.university.deanery.models.User;
 import org.university.deanery.services.GroupService;
+import org.university.deanery.services.UserService;
 
 import java.util.Optional;
 
@@ -44,14 +45,14 @@ public class GroupController {
     }
 
     @GetMapping
-    public String findAll(@ModelAttribute("groupDto") GroupDto groupDto, Model model) {
+    public String findAll(@AuthenticationPrincipal User user, @ModelAttribute("groupDto") GroupDto groupDto, Model model) {
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
             model.addAttribute("success", success);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("groups", groupService.findGroupsByUser(user).get());
         return "groups/find-all";
     }
 

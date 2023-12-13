@@ -30,9 +30,10 @@
     <div th:if="${#lists.isEmpty(groups)}">
         <span style="color: darkorange">Список групп пуст!</span>
     </div>
+
     <div th:unless="${#lists.isEmpty(groups)}">
-        <table th:each="group : ${groups}" th:object="${group}" border="1">
-            <tr>
+        <table border="1">
+            <tr th:each="group : ${groups}" th:object="${group}">
                 <td>Номер аудитории</td>
                 <td><a th:href="@{/groups/{id}(id=*{id})}" th:text="*{title}"></a></td>
                 <td>
