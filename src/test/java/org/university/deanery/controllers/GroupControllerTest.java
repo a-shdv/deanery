@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.models.Group;
+import org.university.deanery.models.User;
 import org.university.deanery.services.GroupService;
 
 import java.util.Optional;
@@ -43,8 +44,9 @@ public class GroupControllerTest {
 
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.empty());
 
+        User user = new User("test", "test", "test");
         // Act
-        String result = groupController.save(groupDto, model);
+        String result = groupController.save(user, groupDto, model);
 
         // Assert
         assertEquals("groups/find-all", result);
@@ -62,7 +64,8 @@ public class GroupControllerTest {
         when(groupService.findGroupByTitle(groupDto.getTitle())).thenReturn(Optional.of(new Group()));
 
         // Act
-        String result = groupController.save(groupDto, model);
+        User user = new User("test", "test", "test");
+        String result = groupController.save(user, groupDto, model);
 
         // Assert
         assertEquals("groups/find-all", result);

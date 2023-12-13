@@ -33,4 +33,6 @@ public class Timetable {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
+
+    private DayOfWeek dayOfWeek;
 }

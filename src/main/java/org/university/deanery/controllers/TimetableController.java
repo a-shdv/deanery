@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.university.deanery.models.DayOfWeek;
 import org.university.deanery.models.Group;
 import org.university.deanery.models.Timetable;
 import org.university.deanery.services.*;
@@ -48,13 +49,14 @@ public class TimetableController {
                        @ModelAttribute("subject-id") Long subjectId,
                        @ModelAttribute("teacher-id") Long teacherId,
                        @ModelAttribute("classroom-id") Long classroomId,
-                       Model model) {
+                       @ModelAttribute("day-of-week-id") int dayOfWeekId) {
         Group group = groupService.findById(groupId).get();
         Timetable timetable = Timetable.builder()
                 .group(group)
                 .subject(subjectService.findById(subjectId).get())
                 .teacher(teacherService.findById(teacherId).get())
                 .classroom(classroomService.findById(classroomId).get())
+                .dayOfWeek(DayOfWeek.toDayOfWeek(dayOfWeekId))
                 .build();
         timetableService.save(timetable);
         return "redirect:/timetables";
