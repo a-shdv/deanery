@@ -4,10 +4,7 @@ package org.university.deanery.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.exceptions.TimetableAlreadyExistsException;
 import org.university.deanery.models.enums.DayOfWeek;
@@ -86,6 +83,20 @@ public class TimetableController {
         } catch (TimetableAlreadyExistsException e) {
             message = "Расписание в аудитории с classroomId: " + classroomId + " в dayOfWeekId: " + dayOfWeekId
                     + " в timeOfClassId: " + timeOfClassId + " уже существует!";
+            redirectAttributes.addFlashAttribute("error", message);
+        }
+        return "redirect:/timetables";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteById(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            timetableService.delete(timetableService.findById(id).orElseThrow(TimetableAlreadyExistsException::new));
+            message = "Расписание с id: " + id + " успешно удалено!";
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (TimetableAlreadyExistsException e) {
+            message = "Расписание с id: " + id + " не найдено!";
             redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/timetables";

@@ -29,11 +29,18 @@ public class TimetableService {
         return timetableRepository.findAll();
     }
 
+    public Optional<Timetable> findById(Long id) {
+        return Optional.ofNullable(timetableRepository.findById(id)).get();
+    }
+
     public Optional<Timetable> findTimetableByClassroom_IdAndDayOfWeekAndTimeOfClass(Long classroomId,
                                                                                      DayOfWeek dayOfWeek,
                                                                                      TimeOfClass timeOfClass) {
         return Optional.ofNullable(timetableRepository
-                        .findTimetableByClassroom_IdAndDayOfWeekAndTimeOfClass(classroomId, dayOfWeek, timeOfClass))
-                .get();
+                .findTimetableByClassroom_IdAndDayOfWeekAndTimeOfClass(classroomId, dayOfWeek, timeOfClass)).get();
+    }
+
+    public void delete(Timetable timetable) {
+        timetableRepository.delete(timetable);
     }
 }

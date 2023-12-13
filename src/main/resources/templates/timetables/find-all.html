@@ -100,6 +100,7 @@
         <th>Аудитория</th>
         <th>День недели</th>
         <th>Время пары</th>
+        <th>Действие</th>
         </thead>
         <tbody th:each="timetable : ${timetables}" th:object="${timetable}">
         <tr>
@@ -129,6 +130,11 @@
                     <div th:case="7"  th:text="'7: 18:00-19:20'"></div>
                     <div th:case="8"  th:text="'8: 19:30-21:00'"></div>
                 </th:block>
+            </td>
+            <td>
+                <form th:action="@{/timetables/{id}(id=${timetable.id})}" th:method="delete">
+                    <input type="submit" value="Удалить ">
+                </form>
             </td>
         </tr>
         </tbody>
