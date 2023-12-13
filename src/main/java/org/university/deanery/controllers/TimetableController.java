@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.university.deanery.exceptions.TimetableAlreadyExistsException;
 import org.university.deanery.models.enums.DayOfWeek;
 import org.university.deanery.models.Group;
 import org.university.deanery.models.Timetable;
@@ -37,6 +39,12 @@ public class TimetableController {
 
     @GetMapping
     public String findAll(Model model) {
+        String success = (String) model.getAttribute("success");
+        String error = (String) model.getAttribute("error");
+        if (success != null)
+            model.addAttribute("success", success);
+        if (error != null)
+            model.addAttribute("error", error);
         model.addAttribute("groups", groupService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
         model.addAttribute("teachers", teacherService.findAll());
@@ -54,17 +62,32 @@ public class TimetableController {
                        @ModelAttribute("teacher-id") Long teacherId,
                        @ModelAttribute("classroom-id") Long classroomId,
                        @ModelAttribute("day-of-week-id") int dayOfWeekId,
-                       @ModelAttribute("time-of-class-id") int timeOfClassId) {
-        Group group = groupService.findById(groupId).get();
-        Timetable timetable = Timetable.builder()
-                .group(group)
-                .subject(subjectService.findById(subjectId).get())
-                .teacher(teacherService.findById(teacherId).get())
-                .classroom(classroomService.findById(classroomId).get())
-                .dayOfWeek(DayOfWeek.toDayOfWeek(dayOfWeekId))
-                .timeOfClass(TimeOfClass.toTimeOfClass(timeOfClassId))
-                .build();
-        timetableService.save(timetable);
+                       @ModelAttribute("time-of-class-id") int timeOfClassId,
+                       RedirectAttributes redirectAttributes) {
+        String message;
+        DayOfWeek dayOfWeek = DayOfWeek.toDayOfWeek(dayOfWeekId);
+        TimeOfClass timeOfClass = TimeOfClass.toTimeOfClass(timeOfClassId);
+        try {
+            if (timetableService
+                    .findTimetableByClassroom_IdAndDayOfWeekAndTimeOfClass(classroomId, dayOfWeek, timeOfClass)
+                    .isPresent())
+                throw new TimetableAlreadyExistsException();
+            Timetable timetable = Timetable.builder()
+                    .group(groupService.findById(groupId).get())
+                    .subject(subjectService.findById(subjectId).get())
+                    .teacher(teacherService.findById(teacherId).get())
+                    .classroom(classroomService.findById(classroomId).get())
+                    .dayOfWeek(dayOfWeek)
+                    .timeOfClass(timeOfClass)
+                    .build();
+            timetableService.save(timetable);
+            message = "Расписание успешно добавлено!";
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (TimetableAlreadyExistsException e) {
+            message = "Расписание в аудитории с classroomId: " + classroomId + " в dayOfWeekId: " + dayOfWeekId
+                    + " в timeOfClassId: " + timeOfClassId + " уже существует!";
+            redirectAttributes.addFlashAttribute("error", message);
+        }
         return "redirect:/timetables";
     }
 }

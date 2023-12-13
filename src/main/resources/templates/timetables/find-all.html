@@ -9,6 +9,8 @@
 </head>
 <body>
 <h2>Расписание</h2>
+<div th:if="${error}" th:text="${error}" style="color: red"></div>
+<div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
     <table>
         <form th:action="@{/timetables}" th:method="post">
