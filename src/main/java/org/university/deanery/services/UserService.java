@@ -44,7 +44,6 @@ public class UserService implements UserDetailsService {
 
     public void saveUser(User user) {
         user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setPasswordLastChanged(LocalDateTime.now());
         user.setRoles(Collections.singletonList(roleRepository.findRoleByTitle("USER")));
@@ -71,7 +70,6 @@ public class UserService implements UserDetailsService {
     public void changeUserPassword(User user, String newPassword) throws PasswordLengthException {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordLastChanged(LocalDateTime.now());
-        user.setCredentialsNonExpired(true);
         userRepository.save(user);
     }
 

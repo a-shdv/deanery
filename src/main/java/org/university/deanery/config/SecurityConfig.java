@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -21,12 +22,14 @@ public class SecurityConfig  {
                                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/sign-in")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/sign-up")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/change-password")).permitAll()
                                 .anyRequest().authenticated()
                 ).formLogin(form ->
                         form
                                 .loginPage("/sign-in")
                                 .loginProcessingUrl("/sign-in")
                                 .defaultSuccessUrl("/")
+                                .failureHandler(authenticationFailureHandler())
                                 .permitAll()
                 ).logout(
                         LogoutConfigurer::permitAll
@@ -37,5 +40,10 @@ public class SecurityConfig  {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 }

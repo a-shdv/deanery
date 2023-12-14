@@ -15,6 +15,8 @@ import org.university.deanery.exceptions.*;
 import org.university.deanery.models.User;
 import org.university.deanery.services.UserService;
 
+import java.util.Comparator;
+
 @Controller
 public class UserController {
     private final UserService userService;
@@ -78,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto, Model model) {
+    public String changePassword(@ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
             User user = userService.findUserByEmail(changePasswordDto.getEmail());
@@ -94,46 +96,48 @@ public class UserController {
                 throw new PasswordLengthException();
             userService.changeUserPassword(user, changePasswordDto.getPasswordNew());
             message = "Пароль успешно изменен!";
-            model.addAttribute("success", message);
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (UserEmailNotFoundException e) {
             message = "Пользователь с электронной почтой " + changePasswordDto.email() + " не найден!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (UserUsernameNotFoundException e) {
             message = "Пользователь с именем " + changePasswordDto.username() + " не найден!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordsMismatchException ex) {
             message = "Пароли не совпадают!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordMustBeNewException e) {
             message = "Новый пароль не может быть таким же, как старый!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         }
-        return "users/change-password";
+        return "redirect:/change-password";
     }
 
     @GetMapping("/find-all-blocked")
     public String findAllBlocked(Model model) {
         String error = (String) model.getAttribute("error");
-        String success = (String) model.getAttribute("success");
-        if (success != null)
-            model.addAttribute("success", success);
+        String warning = (String) model.getAttribute("warning");
+        if (warning != null)
+            model.addAttribute("warning", warning);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userService.findAll().stream().sorted(Comparator.comparingLong(User::getId)));
         return "users/find-all-blocked";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/lock-account/{id}")
     public String setAccountNonLocked(@PathVariable Long id, @ModelAttribute("status") boolean status, RedirectAttributes redirectAttributes) {
         String message;
         try {
             User user = userService.findUserById(id).orElseThrow(UserNotFoundException::new);
             userService.setAccountNonLocked(user, status);
-            message = "Пользователь с id: " + id + " изменен!";
-            redirectAttributes.addFlashAttribute("success", message);
+            message = status
+                    ? "Пользователь с id: " + id + " разблокирован"
+                    : "Пользователь с id: " + id + " заблокирован!";
+            redirectAttributes.addFlashAttribute("warning", message);
         } catch (UserNotFoundException e) {
             message = "Пользователь с id: " + id + " не найден!";
             redirectAttributes.addFlashAttribute("error", message);
