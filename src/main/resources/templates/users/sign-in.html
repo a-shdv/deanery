@@ -5,38 +5,45 @@
     <title>Деканат: Авторизация</title>
 </head>
 <body>
-    <h2>Авторизация</h2>
-    <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <div th:if="${param.error}" style="color: red">
-        <th:block th:switch="${param.error.get(0)}">
-            <div th:case="|LockedException|" th:text="'Учетная запись заблокирована!'"></div>
-            <div th:case="|CredentialsExpiredException|" th:text="'Срок действия пароля пользователя истек!'"></div>
-            <div th:case="|InternalAuthenticationServiceException|" th:text="'Пользователя не существует!'"></div>
-        </th:block>
-    </div>
-    <!--Форма логина-->
-    <form th:action="@{/sign-in}" th:method="post">
-        <table>
-            <!--Имя пользователя-->
-            <tr>
-                <td><label for="username">Имя пользователя</label></td>
-                <td><input type="text" id="username" name="username" placeholder="Введите имя пользователя"></td>
-            </tr>
+<h2>Авторизация</h2>
+<div th:if="${success}" th:text="${success}" style="color: green"></div>
+<div th:if="${param.error}" style="color: red">
+    <th:block th:switch="${param.error.get(0)}">
+        <div th:case="|LockedException|" th:text="'Учетная запись заблокирована!'"></div>
+        <div th:case="|CredentialsExpiredException|">
+            <span th:text="'Срок действия пароля пользователя истек! Пожалуйста, смените пароль:'"></span>
+            <br>
+            <a th:href="@{/change-password}">Сменить пароль</a>
+            <br>
+            <br>
+        </div>
+        <div th:case="|BadCredentialsException|" th:text="'Неправильное имя пользователя или пароль!'"></div>
+        <div th:case="|InternalAuthenticationServiceException|" th:text="'Пользователя не существует!'"></div>
+    </th:block>
+</div>
+<!--Форма логина-->
+<form th:action="@{/sign-in}" th:method="post">
+    <table>
+        <!--Имя пользователя-->
+        <tr>
+            <td><label for="username">Имя пользователя</label></td>
+            <td><input type="text" id="username" name="username" placeholder="Введите имя пользователя"></td>
+        </tr>
 
-            <!--Пароль-->
-            <tr>
-                <td><label for="password">Пароль</label></td>
-                <td><input type="password" id="password" name="password" placeholder="Введите пароль"></td>
-            </tr>
+        <!--Пароль-->
+        <tr>
+            <td><label for="password">Пароль</label></td>
+            <td><input type="password" id="password" name="password" placeholder="Введите пароль"></td>
+        </tr>
 
-            <!--Кнопка "Войти"-->
-            <tr>
-                <td><input type="submit" value="Войти"></td>
-            </tr>
-        </table>
-    </form>
-
-    <a th:href="@{/}">На главную</a>
-    <a th:href="@{/sign-up}">Зарегистрироваться</a>
+        <!--Кнопка "Войти"-->
+        <tr>
+            <td><input type="submit" value="Войти"></td>
+        </tr>
+    </table>
+</form>
+<br>
+<a th:href="@{/}">На главную</a>
+<a th:href="@{/sign-up}">Зарегистрироваться</a>
 </body>
 </html>

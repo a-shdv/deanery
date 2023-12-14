@@ -22,6 +22,7 @@ public class SecurityConfig  {
                                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/sign-in")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/sign-up")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/change-password")).permitAll()
                                 .anyRequest().authenticated()
                 ).formLogin(form ->
                         form

@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto, Model model) {
+    public String changePassword(@ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto, RedirectAttributes redirectAttributes) {
         String message;
         try {
             User user = userService.findUserByEmail(changePasswordDto.getEmail());
@@ -96,24 +96,24 @@ public class UserController {
                 throw new PasswordLengthException();
             userService.changeUserPassword(user, changePasswordDto.getPasswordNew());
             message = "Пароль успешно изменен!";
-            model.addAttribute("success", message);
+            redirectAttributes.addFlashAttribute("success", message);
         } catch (UserEmailNotFoundException e) {
             message = "Пользователь с электронной почтой " + changePasswordDto.email() + " не найден!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (UserUsernameNotFoundException e) {
             message = "Пользователь с именем " + changePasswordDto.username() + " не найден!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordsMismatchException ex) {
             message = "Пароли не совпадают!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordMustBeNewException e) {
             message = "Новый пароль не может быть таким же, как старый!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
-            model.addAttribute("error", message);
+            redirectAttributes.addFlashAttribute("error", message);
         }
-        return "users/change-password";
+        return "redirect:/change-password";
     }
 
     @GetMapping("/find-all-blocked")
