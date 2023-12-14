@@ -29,17 +29,29 @@ public class UserController {
     }
 
     @GetMapping("/sign-in")
-    public String signIn() {
+    public String signIn(Model model) {
+        String success = (String) model.getAttribute("succes");
+        String error = (String) model.getAttribute("error");
+        if (error != null)
+            model.addAttribute("error", error);
+        if (success != null)
+            model.addAttribute("success", success);
         return "users/sign-in";
     }
 
     @GetMapping("/sign-up")
-    public String signUp() {
+    public String signUp(Model model) {
+        String success = (String) model.getAttribute("succes");
+        String error = (String) model.getAttribute("error");
+        if (error != null)
+            model.addAttribute("error", error);
+        if (success != null)
+            model.addAttribute("success", success);
         return "users/sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) {
+    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, RedirectAttributes redirectAttributes) {
         User user = (User) userService.loadUserByUsername(signUpDto.getUsername());
         String message = "";
         try {
@@ -53,26 +65,26 @@ public class UserController {
                 throw new PasswordLengthException();
             userService.saveUser(SignUpDto.toUser(signUpDto));
             message = "Пользователь " + signUpDto.getUsername() + " успешно создан!";
-            model.addAttribute("success", message);
+            redirectAttributes.addAttribute("success", message);
         } catch (UserUsernameAlreadyExistsException e) {
             message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (PasswordsMismatchException e) {
             message = "Пароли не совпадают!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (UserEmailAlreadyExistsException e) {
             message = "Пользователь с электронной почтой " + signUpDto.getEmail() + " уже существует!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         }
 
-        return "users/sign-in";
+        return "redirect:/sign-in";
     }
 
     @GetMapping("/change-password")
@@ -147,5 +159,10 @@ public class UserController {
             redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/find-all-blocked";
+    }
+
+    @GetMapping("/timetable")
+    public String findTimetable(@AuthenticationPrincipal User user) {
+        return "timetables/find-by-group-name";
     }
 }

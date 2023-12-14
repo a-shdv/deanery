@@ -19,20 +19,25 @@
         <div sec:authorize="isAuthenticated()">
             <span th:text="'Добро пожаловать, ' + ${#authentication.getName()} + '!'"></span> <br>
             <br>
-            <a th:href="@{/classrooms}">Аудитории</a>
-            <br>
-            <a th:href="@{/groups}">Группы</a>
-            <br>
-            <a th:href="@{/subjects}">Предметы</a>
-            <br>
-            <a th:href="@{/teachers}">Преподаватели</a>
-            <br>
-            <a th:href="@{/timetables}">Расписание</a>
-            <br>
+            <div sec:authorize="hasAuthority('STUDENT')">
+                <a th:href="@{/timetable}">Посмотреть расписание</a>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/classrooms}">Аудитории</a>
+                <br>
+                <a th:href="@{/groups}">Группы</a>
+                <br>
+                <a th:href="@{/subjects}">Предметы</a>
+                <br>
+                <a th:href="@{/teachers}">Преподаватели</a>
+                <br>
+                <a th:href="@{/timetables}">Расписание</a>
+                <br>
+            </div>
             <br>
             <a th:href="@{/change-password}">Сменить пароль</a>
             <br>
-            <a th:href="@{/find-all-blocked}">Заблокированные</a>
+            <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/find-all-blocked}">Заблокированные</a>
             <br>
             <br>
             <form th:action="@{/logout}" th:method="post">
