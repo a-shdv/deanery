@@ -10,11 +10,11 @@ spring:
     user: postgres
     password: postgres
     change-log: liquibase/db.changelog-master.yaml
-    enabled: false
+    enabled: true
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
 
   mvc:
