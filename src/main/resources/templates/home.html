@@ -37,8 +37,10 @@
             <br>
             <a th:href="@{/change-password}">Сменить пароль</a>
             <br>
-            <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/find-all-blocked}">Заблокированные</a>
-            <br>
+            <div>
+                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/find-all-blocked}">Заблокированные</a>
+                <br>
+            </div>
             <br>
             <form th:action="@{/logout}" th:method="post">
                 <input type="submit" value="Выйти"/>
