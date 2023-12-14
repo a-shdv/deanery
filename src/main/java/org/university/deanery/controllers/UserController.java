@@ -15,6 +15,8 @@ import org.university.deanery.exceptions.*;
 import org.university.deanery.models.User;
 import org.university.deanery.services.UserService;
 
+import java.util.Comparator;
+
 @Controller
 public class UserController {
     private final UserService userService;
@@ -117,23 +119,25 @@ public class UserController {
     @GetMapping("/find-all-blocked")
     public String findAllBlocked(Model model) {
         String error = (String) model.getAttribute("error");
-        String success = (String) model.getAttribute("success");
-        if (success != null)
-            model.addAttribute("success", success);
+        String warning = (String) model.getAttribute("warning");
+        if (warning != null)
+            model.addAttribute("warning", warning);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userService.findAll().stream().sorted(Comparator.comparingLong(User::getId)));
         return "users/find-all-blocked";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/lock-account/{id}")
     public String setAccountNonLocked(@PathVariable Long id, @ModelAttribute("status") boolean status, RedirectAttributes redirectAttributes) {
         String message;
         try {
             User user = userService.findUserById(id).orElseThrow(UserNotFoundException::new);
             userService.setAccountNonLocked(user, status);
-            message = "Пользователь с id: " + id + " изменен!";
-            redirectAttributes.addFlashAttribute("success", message);
+            message = status
+                    ? "Пользователь с id: " + id + " разблокирован"
+                    : "Пользователь с id: " + id + " заблокирован!";
+            redirectAttributes.addFlashAttribute("warning", message);
         } catch (UserNotFoundException e) {
             message = "Пользователь с id: " + id + " не найден!";
             redirectAttributes.addFlashAttribute("error", message);

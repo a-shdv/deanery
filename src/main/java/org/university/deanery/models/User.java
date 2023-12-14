@@ -21,15 +21,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String email;
-
     private String username;
-
     private String password;
     private LocalDateTime passwordLastChanged;
     private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -49,32 +45,31 @@ public class User implements UserDetails {
         return getRoles();
     }
 
+    /*Срок действия учетной записи*/
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /*Статус блокировки учетной записи*/
     @Override
     public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
+    /*Срок действия учетных данных пользователя (пароль)*/
     @Override
     public boolean isCredentialsNonExpired() {
-        if (passwordLastChanged != null) {
-            LocalDateTime now = LocalDateTime.now();
-            long daysSinceLastChange = ChronoUnit.DAYS.between(passwordLastChanged, now);
-            return daysSinceLastChange <= 30;
-        }
-        return true;
+        return ChronoUnit.DAYS.between(passwordLastChanged, LocalDateTime.now()) <= 30;
     }
 
+    /*Проверяет, активирована ли учетная запись пользователя*/
     @Override
     public boolean isEnabled() {
         return true;
     }
 
     public String toString() {
-        return this.getId() + ". " +  this.getUsername() + " " + this.getEmail();
+        return this.getId() + ". " + this.getUsername() + " " + this.getEmail();
     }
 }

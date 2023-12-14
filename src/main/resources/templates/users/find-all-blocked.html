@@ -11,13 +11,12 @@
 <main>
     <h2>Заблокированные пользователя</h2>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
-    <div th:if="${success}" th:text="${success}" style="color: green"></div>
+    <div th:if="${warning}" th:text="${warning}" style="color: orange"></div>
     <table border="1">
         <thead>
         <th>ID</th>
         <th>Имя пользователя</th>
         <th>Статус блокировки</th>
-        <th>Действие</th>
         <th>Посл. смена пароля</th>
         <th>Действие</th>
         </thead>
@@ -30,11 +29,27 @@
             <td th:text="*{username}"></td>
 
             <!--Статус блокировки-->
-            <td th:if="*{accountNonLocked}" th:text="'Разблокирован'"></td>
-            <td th:unless="*{accountNonLocked}" th:text="'Заблокирован'"></td>
+            <td th:if="*{accountNonLocked}">
+                <div th:text="'Активен'" style="color: green"></div>
+            </td>
+            <td th:unless="*{accountNonLocked}">
+                <div th:text="'Заблокирован'" style="color: red"></div>
+            </td>
+
+            <!--Последняя смена пароля-->
+            <td>
+                <div th:if="*{credentialsNonExpired}"
+                     th:text="|*{passwordLastChanged.dayOfMonth}.*{passwordLastChanged.getMonthValue()}.*{passwordLastChanged.getYear()}|"
+                     style="color: green">
+                </div>
+                <div th:unless="*{credentialsNonExpired}"
+                     th:text="|*{passwordLastChanged.dayOfMonth}.*{passwordLastChanged.getMonthValue()}.*{passwordLastChanged.getYear()}|"
+                     style="color: red">
+                </div>
+            </td>
             <!--Действие-->
             <td>
-                <form th:action="@{/{id}(id=*{id})}" th:method="patch">
+                <form th:action="@{/lock-account/{id}(id=*{id})}" th:method="patch">
 
                     <div th:if="*{accountNonLocked}">
                         <input type="hidden" name="status" value="false">
@@ -47,9 +62,6 @@
                     </div>
                 </form>
             </td>
-
-            <!--Последняя смена пароля-->
-            <td th:text="|*{passwordLastChanged.dayOfMonth}.*{passwordLastChanged.getMonthValue()}.*{passwordLastChanged.getYear()}|"></td>
         </tr>
         </tbody>
     </table>
