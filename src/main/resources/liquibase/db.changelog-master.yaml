@@ -3,3 +3,5 @@ databaseChangeLog:
       file: liquibase/changesets/00_init.sql
   - include:
       file: liquibase/changesets/01_insert_users_table.sql
+  - include:
+      file: liquibase/changesets/02_insert_classrooms_table.sql

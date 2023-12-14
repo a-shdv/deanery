@@ -9,6 +9,8 @@
 </head>
 <body>
 <h2>Список аудиторий</h2>
+<a href="/">На главную</a>
+<br>
 <div th:if="${error}" th:text="${error}" style="color: red"></div>
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
@@ -52,6 +54,39 @@
         </table>
     </div>
     <br>
+
+    <!-- Pagination links -->
+    <div>
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <!--Prev.-->
+                    <span th:if="${classrooms.hasPrevious()}">
+                        <form th:action="@{/classrooms}" method="get">
+                            <input type="hidden" name="page" th:value="${classrooms.previousPageable().pageNumber}"/>
+                            <input type="hidden" name="size" th:value="${classrooms.previousPageable().pageSize}"/>
+                            <input type="submit" value="<-"/>
+                        </form>
+                    </span>
+                </td>
+                <td>
+                    <!--Next-->
+                    <span th:if="${classrooms.hasNext()}">
+                        <form th:action="@{/classrooms}" method="get">
+                            <input type="hidden" name="page" th:value="${classrooms.nextPageable().pageNumber}"/>
+                            <input type="hidden" name="size" th:value="${classrooms.nextPageable().pageSize}"/>
+                            <input type="submit" value="->"/>
+                        </form>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+    </div>
+
+
     <button onclick="history.back()">Назад</button>
 </main>
 </body>

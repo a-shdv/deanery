@@ -2,6 +2,8 @@ package org.university.deanery.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,14 +43,17 @@ public class ClassroomController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
+    public String findAll(@RequestParam(required = false, defaultValue = "0") int page,
+                          @RequestParam(required = false, defaultValue = "10") int size,
+                          Model model) {
+        Page<Classroom> classroomPage = classroomService.findAll(PageRequest.of(page, size));
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
             model.addAttribute("success", success);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("classrooms", classroomService.findAll());
+        model.addAttribute("classrooms", classroomPage);
         return "classrooms/find-all";
     }
 
