@@ -91,7 +91,7 @@ public class TimetableController {
 
     @GetMapping("/{id}")
     public String editById(@PathVariable Long id, Model model) {
-        return "/timetables/find-by-id";
+        return "/timetables/admin/find-by-id";
     }
 
     @PutMapping("/{id}")
@@ -134,5 +134,28 @@ public class TimetableController {
             redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/timetables";
+    }
+
+    @GetMapping("/student/find-all")
+    public String studentTimetableFindAll(Model model) {
+        String error = (String) model.getAttribute("error");
+        if (error != null)
+            model.addAttribute("error", error);
+        model.addAttribute("timetables", timetableService.findAll());
+        return "timetables/student/find-all";
+    }
+
+    @GetMapping("/student/find-all/{id}")
+    public String studentTimetableFindById(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            Timetable timetable = timetableService.findById(id).orElseThrow(TimetableNotFoundException::new);
+            model.addAttribute("timetable", timetable);
+        } catch (TimetableNotFoundException e) {
+            message = "Группа с id: " + id + " не найдена!";
+            redirectAttributes.addFlashAttribute("error", message);
+            return "redirect:/timetables/student/find-all";
+        }
+        return "timetables/student/find-by-id";
     }
 }

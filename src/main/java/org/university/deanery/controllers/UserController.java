@@ -1,10 +1,6 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -159,10 +155,5 @@ public class UserController {
             redirectAttributes.addFlashAttribute("error", message);
         }
         return "redirect:/find-all-blocked";
-    }
-
-    @GetMapping("/timetable")
-    public String findTimetable(@AuthenticationPrincipal User user) {
-        return "timetables/find-by-group-name";
     }
 }

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: Расписание</title>
+</head>
+<body>
+    <main>
+        <h2>Все группы:</h2>
+        <div th:if="${error}" th:text="${error}" style="color: red"></div>
+        <div>
+            <ul th:each="timetable : ${timetables}" th:object="${timetable}">
+                <a th:href="@{/timetables/student/find-all/{id}(id=*{id})}"><li th:text="*{group.title}"></li></a>
+            </ul>
+        </div>
+        <button onclick="history.back()">Назад</button>
+    </main>
+</body>
+</html>

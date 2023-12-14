@@ -20,7 +20,7 @@
             <span th:text="'Добро пожаловать, ' + ${#authentication.getName()} + '!'"></span> <br>
             <br>
             <div sec:authorize="hasAuthority('STUDENT')">
-                <a th:href="@{/timetable}">Посмотреть расписание</a>
+                <a th:href="@{/timetables/student/find-all}">Посмотреть расписание</a>
             </div>
             <div sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/classrooms}">Аудитории</a>
