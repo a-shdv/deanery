@@ -98,13 +98,13 @@ public class TimetableService {
                 Subject subject = timetable.getSubject();
                 TimeOfClass timeOfClass = timetable.getTimeOfClass();
 
-                table.addCell(new PdfPCell(new Phrase(dayOfWeek.toString(), fBody))); // DayOfWeek
+                table.addCell(new PdfPCell(new Phrase(localizeDayOfWeek(dayOfWeek), fBody))); // DayOfWeek
                 table.addCell(new PdfPCell(new Phrase(classroom.getClassroomNo().toString(), fBody))); // Classroom
                 table.addCell(new PdfPCell(new Phrase(subject.getTitle().toString(), fBody))); // Subject
-                table.addCell(new PdfPCell(new Phrase(teacher.getLastName() +
+                table.addCell(new PdfPCell(new Phrase(teacher.getLastName() + " " +
                                 teacher.getFirstName().substring(0, 1) + "." +
                                 teacher.getPatronymicName().substring(0, 1) + ".", fBody))); // Teacher
-                table.addCell(new PdfPCell(new Phrase(timeOfClass.toString(), fBody))); // TimeOfClass
+                table.addCell(new PdfPCell(new Phrase(localizeTimeOfClass(timeOfClass), fBody))); // TimeOfClass
             }
 
             document.add(p);
@@ -113,5 +113,33 @@ public class TimetableService {
         } catch (DocumentException | IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private String localizeDayOfWeek(DayOfWeek dayOfWeek) {
+        return switch (dayOfWeek.getCode()) {
+            case 0 -> "Sunday";
+            case 1 -> "Monday";
+            case 2 -> "Tuesday";
+            case 3 -> "Wednesday";
+            case 4 -> "Thursday";
+            case 5 -> "Friday";
+            case 6 -> "Saturday";
+            default -> throw new IllegalStateException("Unexpected value: " + dayOfWeek.getCode());
+        };
+    }
+
+    private String localizeTimeOfClass(TimeOfClass timeOfClass) {
+        return switch(timeOfClass.getCode()) {
+            case 0 -> "0: -";
+            case 1 -> "1: 08:30-09:50";
+            case 2 -> "2: 10:00-11:20";
+            case 3 -> "3: 11:30-12:50";
+            case 4 -> "4: 13:30-14:50";
+            case 5 -> "5: 15:00-16:20";
+            case 6 -> "6: 16:30-17:50";
+            case 7 -> "7: 18:00-19:20";
+            case 8 -> "8: 19:30-21:00";
+            default -> throw new IllegalStateException("Unexpected value: " + timeOfClass.getCode());
+        };
     }
 }
