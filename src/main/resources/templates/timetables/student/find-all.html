@@ -12,8 +12,8 @@
         <h2>Все группы:</h2>
         <div th:if="${error}" th:text="${error}" style="color: red"></div>
         <div>
-            <ul th:each="timetable : ${timetables}" th:object="${timetable}">
-                <a th:href="@{/timetables/student/find-all/{id}(id=*{id})}"><li th:text="*{group.title}"></li></a>
+            <ul th:each="group : ${groups}" th:object="${group}">
+                <a th:href="@{/timetables/student/find-all/{id}(id=*{id})}"><li th:text="*{title}"></li></a>
             </ul>
         </div>
         <button onclick="history.back()">Назад</button>

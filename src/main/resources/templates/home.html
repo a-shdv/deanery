@@ -35,14 +35,17 @@
                 <br>
             </div>
             <br>
-            <a th:href="@{/change-password}">Сменить пароль</a>
-            <br>
             <div>
-                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/find-all-blocked}">Заблокированные</a>
+                <a th:href="@{/change-password}">Сменить пароль</a>
                 <br>
             </div>
-            <br>
+
+            <div>
+                <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/find-all-blocked}">Заблокированные</a>
+            </div>
+
             <form th:action="@{/logout}" th:method="post">
+                <br>
                 <input type="submit" value="Выйти"/>
             </form>
         </div>

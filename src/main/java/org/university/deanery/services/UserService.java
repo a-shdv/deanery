@@ -69,36 +69,4 @@ public class UserService implements UserDetailsService {
         user.setAccountNonLocked(status);
         userRepository.save(user);
     }
-
-//    @EventListener(ApplicationReadyEvent.class)
-    public void generatePdf() {
-        List<User> users = userRepository.findAll();
-        Document document = new Document();
-
-        try {
-            PdfWriter.getInstance(document, new FileOutputStream("/Users/a-shdv/IdeaProjects/deanery/test.pdf"));
-
-            document.open();
-
-            Paragraph p = new Paragraph();
-            p.add("List of all users");
-            p.setAlignment(Element.ALIGN_CENTER);
-
-            document.add(p);
-
-            Paragraph p2 = new Paragraph();
-            for (User user : users) {
-                p2.add(user.toString() + "\n");
-            }
-            document.add(p2);
-
-            Font f = new Font();
-            f.setStyle(Font.BOLD);
-            f.setSize(8);
-
-            document.close();
-        } catch (DocumentException | IOException e) {
-            log.info(e.getMessage());
-        }
-    }
 }

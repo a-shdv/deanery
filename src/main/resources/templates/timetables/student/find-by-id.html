@@ -10,9 +10,10 @@
 <body>
 <main>
     <div>
-        <h4>Расписание для: <span th:text="${timetable.group.title}"></span></h4>
-
+        <h2>Расписание для: <span th:text="${timetables.get(0).group.title}"></span></h2>
     </div>
+    <div th:if="${error}" th:text="${error}" style="color: red"></div>
+    <div th:if="${success}" th:text="${success}" style="color: green"></div>
     <table border="1">
         <thead>
         <th>День</th>
@@ -22,7 +23,7 @@
         <th>Время</th>
         </thead>
         <tbody>
-        <tr th:object="${timetable}">
+        <tr th:each="timetable : ${timetables}" th:object="${timetable}">
             <!--День-->
             <td>
                 <th:block th:switch="*{dayOfWeek.getCode()}">
@@ -56,6 +57,12 @@
             </td>
         </tr>
     </table>
+    <br>
+    <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}" th:method="post">
+        <button type="submit">Сформировать отчет</button>
+    </form>
+    <button>Отправить на почту</button>
+    <br>
     <br>
     <button onclick="history.back()">Назад</button>
 </main>

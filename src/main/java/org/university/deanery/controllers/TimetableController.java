@@ -7,14 +7,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.university.deanery.dtos.TimetableDto;
+import org.university.deanery.exceptions.GroupAlreadyExistsException;
+import org.university.deanery.exceptions.GroupNotFoundException;
 import org.university.deanery.exceptions.TimetableAlreadyExistsException;
 import org.university.deanery.exceptions.TimetableNotFoundException;
+import org.university.deanery.models.Group;
 import org.university.deanery.models.Timetable;
 import org.university.deanery.models.enums.DayOfWeek;
 import org.university.deanery.models.enums.TimeOfClass;
 import org.university.deanery.services.*;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -141,21 +145,68 @@ public class TimetableController {
         String error = (String) model.getAttribute("error");
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("timetables", timetableService.findAll());
+        model.addAttribute("groups", groupService.findAll());
         return "timetables/student/find-all";
     }
 
     @GetMapping("/student/find-all/{id}")
     public String studentTimetableFindById(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         String message;
+        String success = (String) model.getAttribute("success");
+        String error = (String) model.getAttribute("error");
+        if (success != null)
+            model.addAttribute("success", success);
+        if (error != null)
+            model.addAttribute("error", error);
+
         try {
-            Timetable timetable = timetableService.findById(id).orElseThrow(TimetableNotFoundException::new);
-            model.addAttribute("timetable", timetable);
+            Group group = groupService
+                    .findById(id)
+                    .orElseThrow(GroupNotFoundException::new);
+
+            List<Timetable> timetables
+                    = timetableService
+                    .findAllByGroup(group)
+                    .orElseThrow(TimetableNotFoundException::new);
+
+            model.addAttribute("timetables", timetables);
         } catch (TimetableNotFoundException e) {
+            message = "Расписание не найдено!";
+            redirectAttributes.addFlashAttribute("error", message);
+            return "redirect:/timetables/student/find-all";
+        } catch (GroupNotFoundException e) {
             message = "Группа с id: " + id + " не найдена!";
             redirectAttributes.addFlashAttribute("error", message);
             return "redirect:/timetables/student/find-all";
         }
         return "timetables/student/find-by-id";
+    }
+
+    @PostMapping("/student/find-all/{id}/generate-pdf")
+    public String generatePdf(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            Group group = groupService
+                    .findById(id)
+                    .orElseThrow(GroupNotFoundException::new);
+
+            List<Timetable> timetables
+                    = timetableService
+                    .findAllByGroup(group)
+                    .orElseThrow(TimetableNotFoundException::new);
+
+            timetableService.generatePdfTimetable(timetables);
+            message = "Отчет успешно сгенерирован!";
+            redirectAttributes.addFlashAttribute("success", message);
+        } catch (TimetableNotFoundException e) {
+            message = "Расписание не найдено!";
+            redirectAttributes.addFlashAttribute("error", message);
+            return "redirect:/timetables/student/find-all";
+        } catch (GroupNotFoundException e) {
+            message = "Группа с id: " + id + " не найдена!";
+            redirectAttributes.addFlashAttribute("error", message);
+            return "redirect:/timetables/student/find-all";
+        }
+        return "redirect:/timetables/student/find-all/" + id;
     }
 }
