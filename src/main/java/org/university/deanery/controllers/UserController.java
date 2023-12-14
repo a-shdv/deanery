@@ -5,6 +5,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.university.deanery.models.User;
 import org.university.deanery.services.UserService;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -40,7 +42,6 @@ public class UserController {
     public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) {
         User user = (User) userService.loadUserByUsername(signUpDto.getUsername());
         String message = "";
-//        model.asMap().clear();
         try {
             if (userService.findUserByEmail(signUpDto.getEmail()) != null)
                 throw new UserEmailAlreadyExistsException();
@@ -117,14 +118,17 @@ public class UserController {
     }
 
     @GetMapping("/find-all-blocked")
-    public String findAllBlocked(Model model) {
+    public String findAllBlocked(@AuthenticationPrincipal User authenticatedUser, Model model) {
         String error = (String) model.getAttribute("error");
         String warning = (String) model.getAttribute("warning");
         if (warning != null)
             model.addAttribute("warning", warning);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("users", userService.findAll().stream().sorted(Comparator.comparingLong(User::getId)));
+        model.addAttribute("users", userService.findAll().stream()
+                .filter(u -> !u.getUsername().equals(authenticatedUser.getUsername()))
+                .sorted(Comparator.comparingLong(User::getId))
+                .collect(Collectors.toList()));
         return "users/find-all-blocked";
     }
 

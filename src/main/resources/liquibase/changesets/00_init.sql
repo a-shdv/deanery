@@ -10,12 +10,6 @@ create table groups
     title varchar(255),
     primary key (id)
 );
-create table roles
-(
-    id    bigserial not null,
-    title varchar(255),
-    primary key (id)
-);
 create table subjects
 (
     id    bigserial not null,
@@ -48,6 +42,11 @@ create table timetables
     teacher_id    bigint,
     primary key (id)
 );
+create table user_roles
+(
+    user_id bigint not null,
+    roles   varchar(255) check (roles in ('DEAN', 'STUDENT'))
+);
 create table users
 (
     account_non_locked    boolean   not null,
@@ -58,17 +57,10 @@ create table users
     username              varchar(255),
     primary key (id)
 );
-create table users_roles
-(
-    role_id bigint not null,
-    user_id bigint not null
-);
-
 alter table if exists teachers_subjects add constraint FK60390cxlor02x2h4wra2gge2b foreign key (subject_id) references subjects;
 alter table if exists teachers_subjects add constraint FKncdyxoidjk44jwkexcltr87ay foreign key (teacher_id) references teachers;
 alter table if exists timetables add constraint FK18lp6tw732sd0od8jh4aytdn8 foreign key (classroom_id) references classrooms;
 alter table if exists timetables add constraint FKgiq0e7ecg94hdk9on7eslyn08 foreign key (group_id) references groups;
 alter table if exists timetables add constraint FKgud9rcaxdpwxad8k1ubijyfem foreign key (subject_id) references subjects;
 alter table if exists timetables add constraint FKhw9tm03jm0du6i411hc0gftu9 foreign key (teacher_id) references teachers;
-alter table if exists users_roles add constraint FKj6m8fwv7oqv74fcehir1a9ffy foreign key (role_id) references roles;
-alter table if exists users_roles add constraint FK2o0jvgh89lemvvo17cbqvdxaa foreign key (user_id) references users;
+alter table if exists user_roles add constraint FKhfh9dx7w3ubf1co1vdev94g3f foreign key (user_id) references users;

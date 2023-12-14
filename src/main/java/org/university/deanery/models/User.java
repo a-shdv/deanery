@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.university.deanery.models.enums.Role;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -27,12 +30,11 @@ public class User implements UserDetails {
     private LocalDateTime passwordLastChanged;
     private boolean accountNonLocked;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"))
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 
     public User(String email, String username, String password) {
         this.email = email;

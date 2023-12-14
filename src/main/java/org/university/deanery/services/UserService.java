@@ -2,24 +2,18 @@ package org.university.deanery.services;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.university.deanery.exceptions.PasswordLengthException;
-import org.university.deanery.models.Group;
 import org.university.deanery.models.User;
-import org.university.deanery.repositories.RoleRepository;
+import org.university.deanery.models.enums.Role;
 import org.university.deanery.repositories.UserRepository;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,14 +25,12 @@ import java.util.Optional;
 @Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     public static final byte passwordLength = 4;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,7 +38,7 @@ public class UserService implements UserDetailsService {
         user.setAccountNonLocked(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setPasswordLastChanged(LocalDateTime.now());
-        user.setRoles(Collections.singletonList(roleRepository.findRoleByTitle("USER")));
+        user.setRoles(Collections.singleton(Role.STUDENT));
         userRepository.save(user);
     }
 
