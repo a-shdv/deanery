@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: liquibase/changesets/00_init.sql
+  - include:
+      file: liquibase/changesets/01_insert_users_table.sql

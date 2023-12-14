@@ -3,7 +3,7 @@ package org.university.deanery.models.enums;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
-    DEAN(0),
+    ADMIN(0),
     STUDENT(1);
     private int code;
 
