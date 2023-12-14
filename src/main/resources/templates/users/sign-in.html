@@ -7,7 +7,13 @@
 <body>
     <h2>Авторизация</h2>
     <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <div th:if="${param.error}" style="color: red">Неправильный логин или пароль!</div>
+    <div th:if="${param.error}" style="color: red">
+        <th:block th:switch="${param.error.get(0)}">
+            <div th:case="|LockedException|" th:text="'Учетная запись заблокирована!'"></div>
+            <div th:case="|CredentialsExpiredException|" th:text="'Срок действия пароля пользователя истек!'"></div>
+            <div th:case="|InternalAuthenticationServiceException|" th:text="'Пользователя не существует!'"></div>
+        </th:block>
+    </div>
     <!--Форма логина-->
     <form th:action="@{/sign-in}" th:method="post">
         <table>
