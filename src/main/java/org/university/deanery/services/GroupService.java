@@ -2,6 +2,8 @@ package org.university.deanery.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.university.deanery.dtos.GroupDto;
 import org.university.deanery.exceptions.ClassroomNotFoundException;
@@ -29,6 +31,10 @@ public class GroupService {
 
     public List<Group> findAll() {
         return groupRepository.findAll();
+    }
+
+    public Page<Group> findAll(PageRequest pageRequest) {
+        return groupRepository.findAll(pageRequest);
     }
 
     public Optional<Group> findById(Long id) {

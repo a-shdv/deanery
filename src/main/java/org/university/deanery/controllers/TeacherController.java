@@ -56,7 +56,8 @@ public class TeacherController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
+    public String findAll(@RequestAttribute int page,
+                            @Req,Model model) {
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
