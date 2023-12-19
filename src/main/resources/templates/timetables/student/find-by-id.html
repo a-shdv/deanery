@@ -58,11 +58,15 @@
         </tr>
     </table>
     <br>
-    <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}" th:method="post">
+    <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}"
+          th:method="post">
         <button type="submit">Сформировать отчет</button>
     </form>
-    <button>Отправить на почту</button>
     <br>
+    <form th:action="@{/timetables/student/find-all/{id}/send-email(id=${timetables.get(0).group.id})}"
+          th:method="post">
+        <button type="submit">Отправить на почту</button>
+    </form>
     <br>
     <button onclick="history.back()">Назад</button>
 </main>

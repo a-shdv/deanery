@@ -5,6 +5,8 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.university.deanery.dtos.TimetableDto;
 import org.university.deanery.models.*;
@@ -34,6 +36,10 @@ public class TimetableService {
 
     public List<Timetable> findAll() {
         return timetableRepository.findAll();
+    }
+
+    public Page<Timetable> findAll(PageRequest pageRequest) {
+        return timetableRepository.findAll(pageRequest);
     }
 
     public Optional<Timetable> findById(Long id) {
@@ -68,7 +74,7 @@ public class TimetableService {
     public void generatePdfTimetable(List<Timetable> timetables) {
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\Антон\\Desktop\\timetable.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream(EmailSenderService.attachment));
             PdfPTable table = new PdfPTable(5);
             Paragraph p = new Paragraph();
             Font fHeader = new Font();

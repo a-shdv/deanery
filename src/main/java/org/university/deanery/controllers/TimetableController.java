@@ -1,7 +1,11 @@
 package org.university.deanery.controllers;
 
 
+import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,30 +21,39 @@ import org.university.deanery.models.enums.DayOfWeek;
 import org.university.deanery.models.enums.TimeOfClass;
 import org.university.deanery.services.*;
 
+import java.io.FileNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/timetables")
+@Slf4j
 public class TimetableController {
     private final TimetableService timetableService;
     private final GroupService groupService;
     private final SubjectService subjectService;
     private final TeacherService teacherService;
     private final ClassroomService classroomService;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public TimetableController(TimetableService timetableService, GroupService groupService, SubjectService subjectService, TeacherService teacherService, ClassroomService classroomService) {
+    public TimetableController(TimetableService timetableService, GroupService groupService,
+                               SubjectService subjectService, TeacherService teacherService,
+                               ClassroomService classroomService, EmailSenderService emailSenderService) {
         this.timetableService = timetableService;
         this.groupService = groupService;
         this.subjectService = subjectService;
         this.teacherService = teacherService;
         this.classroomService = classroomService;
+        this.emailSenderService = emailSenderService;
     }
 
     @GetMapping
-    public String findAll(Model model) {
+    public String findAll(@RequestParam(required = false, defaultValue = "0") int page,
+                          @RequestParam(required = false, defaultValue = "10") int size,
+                          Model model) {
+        Page<Timetable> timetablePage = timetableService.findAll(PageRequest.of(page, size));
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
@@ -51,7 +64,7 @@ public class TimetableController {
         model.addAttribute("subjects", subjectService.findAll());
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("classrooms", classroomService.findAll());
-        model.addAttribute("timetables", timetableService.findAll()
+        model.addAttribute("timetables", timetablePage
                 .stream()
                 .sorted(Comparator.comparing(Timetable::getDayOfWeek).thenComparing(Timetable::getTimeOfClass))
                 .collect(Collectors.toList()));
@@ -141,11 +154,14 @@ public class TimetableController {
     }
 
     @GetMapping("/student/find-all")
-    public String studentTimetableFindAll(Model model) {
+    public String studentTimetableFindAll(@RequestParam(required = false, defaultValue = "0") int page,
+                                          @RequestParam(required = false, defaultValue = "10") int size,
+                                          Model model) {
+        Page<Group> groupPage = groupService.findAll(PageRequest.of(page, size));
         String error = (String) model.getAttribute("error");
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("groups", groupPage);
         return "timetables/student/find-all";
     }
 
@@ -207,6 +223,19 @@ public class TimetableController {
             redirectAttributes.addFlashAttribute("error", message);
             return "redirect:/timetables/student/find-all";
         }
+        return "redirect:/timetables/student/find-all/" + id;
+    }
+
+    @PostMapping("/student/find-all/{id}/send-email")
+    public String sendEmail(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String message;
+        try {
+            emailSenderService.sendEmailWithAttachment(EmailSenderService.fromAddress, "Report", "", EmailSenderService.attachment);
+        } catch (MessagingException | FileNotFoundException e) {
+            log.info(e.getMessage());
+        }
+        message = "Отчет успешно отправлен!";
+        redirectAttributes.addFlashAttribute("success", message);
         return "redirect:/timetables/student/find-all/" + id;
     }
 }

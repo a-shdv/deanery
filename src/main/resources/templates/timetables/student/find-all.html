@@ -10,11 +10,42 @@
 <body>
     <main>
         <h2>Все группы:</h2>
+        <a href="/">На главную</a>
         <div th:if="${error}" th:text="${error}" style="color: red"></div>
         <div>
             <ul th:each="group : ${groups}" th:object="${group}">
                 <a th:href="@{/timetables/student/find-all/{id}(id=*{id})}"><li th:text="*{title}"></li></a>
             </ul>
+        </div>
+        <!-- Pagination links -->
+        <div>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <!--Prev.-->
+                        <span th:if="${groups.hasPrevious()}">
+                        <form th:action="@{/groups}" method="get">
+                            <input type="hidden" name="page" th:value="${groups.previousPageable().pageNumber}"/>
+                            <input type="hidden" name="size" th:value="${groups.previousPageable().pageSize}"/>
+                            <input type="submit" value="<-"/>
+                        </form>
+                    </span>
+                    </td>
+                    <td>
+                        <!--Next-->
+                        <span th:if="${groups.hasNext()}">
+                        <form th:action="@{/groups}" method="get">
+                            <input type="hidden" name="page" th:value="${groups.nextPageable().pageNumber}"/>
+                            <input type="hidden" name="size" th:value="${groups.nextPageable().pageSize}"/>
+                            <input type="submit" value="->"/>
+                        </form>
+                    </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
         </div>
         <button onclick="history.back()">Назад</button>
     </main>

@@ -5,3 +5,11 @@ databaseChangeLog:
       file: liquibase/changesets/01_insert_users_table.sql
   - include:
       file: liquibase/changesets/02_insert_classrooms_table.sql
+  - include:
+      file: liquibase/changesets/03_insert_groups_table.sql
+  - include:
+      file: liquibase/changesets/04_insert_subjects_table.sql
+  - include:
+      file: liquibase/changesets/05_insert_teachers_table.sql
+  - include:
+      file: liquibase/changesets/06_insert_teachers_subjects_table.sql
