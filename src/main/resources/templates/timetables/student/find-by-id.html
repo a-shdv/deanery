@@ -9,12 +9,16 @@
 </head>
 <body>
 <main>
-    <div>
+    <div th:if="${!#lists.isEmpty(timetables)}">
         <h2>Расписание для: <span th:text="${timetables.get(0).group.title}"></span></h2>
+    </div>
+    <div th:if="${#lists.isEmpty(timetables)}">
+        <h2>Расписание</span></h2>
     </div>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <table border="1">
+    <div th:if="${#lists.isEmpty(timetables)}" th:text="'Расписание отсутствует!'"></div>
+    <table border="1" th:if="${!#lists.isEmpty(timetables)}">
         <thead>
         <th>День</th>
         <th>Аудитория</th>
@@ -22,7 +26,7 @@
         <th>Преподаватель</th>
         <th>Время</th>
         </thead>
-        <tbody>
+        <tbody >
         <tr th:each="timetable : ${timetables}" th:object="${timetable}">
             <!--День-->
             <td>
@@ -58,15 +62,21 @@
         </tr>
     </table>
     <br>
-    <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}"
-          th:method="post">
-        <button type="submit">Сформировать отчет</button>
-    </form>
+    <div th:if="${!#lists.isEmpty(timetables)}">
+        <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}"
+              th:method="post">
+            <button type="submit">Сформировать отчет</button>
+        </form>
+    </div>
+
     <br>
-    <form th:action="@{/timetables/student/find-all/{id}/send-email(id=${timetables.get(0).group.id})}"
-          th:method="post">
-        <button type="submit">Отправить на почту</button>
-    </form>
+    <div th:if="${!#lists.isEmpty(timetables)}">
+        <form th:action="@{/timetables/student/find-all/{id}/send-email(id=${timetables.get(0).group.id})}"
+              th:method="post">
+            <button type="submit">Отправить на почту</button>
+        </form>
+    </div>
+
     <br>
     <button onclick="history.back()">Назад</button>
 </main>

@@ -108,7 +108,13 @@ public class TimetableController {
 
     @GetMapping("/{id}")
     public String editById(@PathVariable Long id, Model model) {
-        return "/timetables/admin/find-by-id";
+        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("subjects", subjectService.findAll());
+        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("classrooms", classroomService.findAll());
+        model.addAttribute("timetables", timetableService.findAll());
+        model.addAttribute("id", id);
+        return "/timetables/find-by-id";
     }
 
     @PutMapping("/{id}")

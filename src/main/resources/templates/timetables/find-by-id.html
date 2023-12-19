@@ -8,8 +8,9 @@
     <title>Деканaт: Расписание</title>
 </head>
 <body>
+<a href="/">На главную</a>
 <table>
-    <form th:action="@{/templates/timetables}" th:method="post">
+    <form th:action="@{/timetables/{id}(id=${id})}" th:method="put">
         <!--Группа-->
         <tr>
             <td><label for="group-id">Группа</label></td>

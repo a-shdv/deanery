@@ -65,6 +65,7 @@ public class TimetableService {
         timetable.setSubject(timetableDto.getSubject());
         timetable.setDayOfWeek(DayOfWeek.toDayOfWeek(timetableDto.getDayOfWeekId()));
         timetable.setTimeOfClass(TimeOfClass.toTimeOfClass(timetableDto.getTimeOfClassId()));
+        timetableRepository.save(timetable);
     }
 
     public void delete(Timetable timetable) {
