@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Деканат: Расписание</title>
+</head>
+<body>
+<main>
+    <div th:if="${!#lists.isEmpty(timetables)}">
+        <h2>Расписание для: <span th:text="${timetables.get(0).group.title}"></span></h2>
+    </div>
+    <div th:if="${#lists.isEmpty(timetables)}">
+        <h2>Расписание</span></h2>
+    </div>
+    <div th:if="${error}" th:text="${error}" style="color: red"></div>
+    <div th:if="${success}" th:text="${success}" style="color: green"></div>
+    <div th:if="${#lists.isEmpty(timetables)}" th:text="'Расписание отсутствует!'"></div>
+    <table border="1" th:if="${!#lists.isEmpty(timetables)}">
+        <thead>
+        <th>День</th>
+        <th>Аудитория</th>
+        <th>Предмет</th>
+        <th>Преподаватель</th>
+        <th>Время</th>
+        </thead>
+        <tbody >
+        <tr th:each="timetable : ${timetables}" th:object="${timetable}">
+            <!--День-->
+            <td>
+                <th:block th:switch="*{dayOfWeek.getCode()}">
+                    <div th:case="0" th:text="'Воскресенье'"></div>
+                    <div th:case="1" th:text="'Понедельник'"></div>
+                    <div th:case="2" th:text="'Вторник'"></div>
+                    <div th:case="3" th:text="'Среда'"></div>
+                    <div th:case="4" th:text="'Четверг'"></div>
+                    <div th:case="5" th:text="'Пятница'"></div>
+                    <div th:case="6" th:text="'Суббота'"></div>
+                </th:block>
+            </td>
+            <!--Номер аудитории-->
+            <td th:text="*{classroom.classroomNo}"></td>
+            <!--Предмет-->
+            <td th:text="*{subject.title}"></td>
+            <!--Преподаватель-->
+            <td th:text="|*{teacher.firstName.substring(0, 1)}. *{teacher.patronymicName.substring(0, 1)}. *{teacher.lastName}|"></td>
+            <!--Время-->
+            <td>
+                <th:block th:switch="*{timeOfClass.getCode()}">
+                    <div th:case="1" th:text="'1: 08:30-09:50'"></div>
+                    <div th:case="2" th:text="'2: 10:00-11:20'"></div>
+                    <div th:case="3" th:text="'3: 11:30-12:50'"></div>
+                    <div th:case="4" th:text="'4: 13:30-14:50'"></div>
+                    <div th:case="5" th:text="'5: 15:00-16:20'"></div>
+                    <div th:case="6" th:text="'6: 16:30-17:50'"></div>
+                    <div th:case="7" th:text="'7: 18:00-19:20'"></div>
+                    <div th:case="8" th:text="'8: 19:30-21:00'"></div>
+                </th:block>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <div th:if="${!#lists.isEmpty(timetables)}">
+        <form th:action="@{/timetables/student/find-all/{id}/generate-pdf(id=${timetables.get(0).group.id})}"
+              th:method="post">
+            <button type="submit">Сформировать отчет</button>
+        </form>
+    </div>
+
+    <br>
+    <div th:if="${!#lists.isEmpty(timetables)}">
+        <form th:action="@{/timetables/student/find-all/{id}/send-email(id=${timetables.get(0).group.id})}"
+              th:method="post">
+            <button type="submit">Отправить на почту</button>
+        </form>
+    </div>
+
+    <br>
+    <button onclick="history.back()">Назад</button>
+</main>
+</body>
+</html>

@@ -10,8 +10,7 @@
 <body>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <div th:if="${success}" th:text="${success}" style="color: green"></div>
-    <div th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.classroomNo}" style="font-weight: bold"></div>
-    <br>
+    <h2 th:if="${classroom}" th:text="${'Номер аудитории: ' + classroom.classroomNo}" style="font-weight: bold"></h2>
     <table>
         <form th:action="@{/classrooms/{id}(id=${classroom.id})}" th:method="put" th:object="${classroomDto}">
             <!--Номер аудитории-->

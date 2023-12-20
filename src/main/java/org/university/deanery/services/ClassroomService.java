@@ -1,6 +1,8 @@
 package org.university.deanery.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.university.deanery.dtos.ClassroomDto;
 import org.university.deanery.exceptions.ClassroomNotFoundException;
@@ -26,6 +28,11 @@ public class ClassroomService {
     public List<Classroom> findAll() {
         return classroomRepository.findAll();
     }
+
+    public Page<Classroom> findAll(PageRequest pageRequest) {
+        return classroomRepository.findAll(pageRequest);
+    }
+
 
     public Optional<Classroom> findById(Long id) {
         return Optional.ofNullable(classroomRepository.findById(id)).get();

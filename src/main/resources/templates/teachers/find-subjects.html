@@ -26,8 +26,7 @@
         </td>
     </tr>
 
-    <!--Предметы-->
-    <h3>Предметы</h3>
+    <br>
     <tr>
         <!--Пустой список-->
         <div th:if="${#lists.isEmpty(teacher.teacherSubjects)}">
@@ -35,7 +34,7 @@
         </div>
         <!--Список предметов преподавателя-->
         <div th:unless="${#lists.isEmpty(teacher.teacherSubjects)}">
-            <table>
+            <table border="1">
                 <thead>
                 <th>Предмет</th>
                 <th>Действие</th>
@@ -60,7 +59,7 @@
 
     </tr>
     <br>
-    <a href="/">На главную</a>
+    <button onclick="history.back()">Назад</button>
 </main>
 </body>
 </html>

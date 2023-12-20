@@ -5,11 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Декант: Расписание</title>
+    <title>Деканaт: Расписание</title>
 </head>
 <body>
+<a href="/">На главную</a>
 <table>
-    <form th:action="@{/timetables}" th:method="post">
+    <form th:action="@{/timetables/{id}(id=${id})}" th:method="put">
         <!--Группа-->
         <tr>
             <td><label for="group-id">Группа</label></td>

@@ -10,8 +10,7 @@
 <body>
 <div th:if="${error}" th:text="${error}" style="color: red"></div>
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
-<div th:if="${teacher}" th:object="${teacher}" th:text="|Преподаватель: *{lastName} *{firstName} *{patronymicName}|" style="font-weight: bold"></div>
-<br>
+<h2 th:if="${teacher}" th:object="${teacher}" th:text="|Преподаватель: *{lastName} *{firstName} *{patronymicName}|" style="font-weight: bold"></h2>
 <table>
     <form th:action="@{/teachers/{id}(id=${teacher.id})}" th:method="put" th:object="${teacherDto}">
         <!--Фамилия-->

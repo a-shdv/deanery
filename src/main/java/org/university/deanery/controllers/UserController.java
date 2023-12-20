@@ -1,10 +1,7 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +13,7 @@ import org.university.deanery.models.User;
 import org.university.deanery.services.UserService;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -27,20 +25,31 @@ public class UserController {
     }
 
     @GetMapping("/sign-in")
-    public String signIn() {
+    public String signIn(Model model) {
+        String success = (String) model.getAttribute("succes");
+        String error = (String) model.getAttribute("error");
+        if (error != null)
+            model.addAttribute("error", error);
+        if (success != null)
+            model.addAttribute("success", success);
         return "users/sign-in";
     }
 
     @GetMapping("/sign-up")
-    public String signUp() {
+    public String signUp(Model model) {
+        String success = (String) model.getAttribute("succes");
+        String error = (String) model.getAttribute("error");
+        if (error != null)
+            model.addAttribute("error", error);
+        if (success != null)
+            model.addAttribute("success", success);
         return "users/sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, Model model) {
+    public String signUp(@ModelAttribute("signUpDto") SignUpDto signUpDto, RedirectAttributes redirectAttributes) {
         User user = (User) userService.loadUserByUsername(signUpDto.getUsername());
         String message = "";
-//        model.asMap().clear();
         try {
             if (userService.findUserByEmail(signUpDto.getEmail()) != null)
                 throw new UserEmailAlreadyExistsException();
@@ -52,26 +61,26 @@ public class UserController {
                 throw new PasswordLengthException();
             userService.saveUser(SignUpDto.toUser(signUpDto));
             message = "Пользователь " + signUpDto.getUsername() + " успешно создан!";
-            model.addAttribute("success", message);
+            redirectAttributes.addAttribute("success", message);
         } catch (UserUsernameAlreadyExistsException e) {
             message = "Пользователь с именем " + signUpDto.getUsername() + " уже существует!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (PasswordsMismatchException e) {
             message = "Пароли не совпадают!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (PasswordLengthException e) {
             message = "Длина пароля должна быть больше " + UserService.passwordLength + " символов!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         } catch (UserEmailAlreadyExistsException e) {
             message = "Пользователь с электронной почтой " + signUpDto.getEmail() + " уже существует!";
-            model.addAttribute("error", message);
-            return "users/sign-up";
+            redirectAttributes.addAttribute("error", message);
+            return "redirect:/sign-up";
         }
 
-        return "users/sign-in";
+        return "redirect:/sign-in";
     }
 
     @GetMapping("/change-password")
@@ -117,14 +126,17 @@ public class UserController {
     }
 
     @GetMapping("/find-all-blocked")
-    public String findAllBlocked(Model model) {
+    public String findAllBlocked(@AuthenticationPrincipal User authenticatedUser, Model model) {
         String error = (String) model.getAttribute("error");
         String warning = (String) model.getAttribute("warning");
         if (warning != null)
             model.addAttribute("warning", warning);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("users", userService.findAll().stream().sorted(Comparator.comparingLong(User::getId)));
+        model.addAttribute("users", userService.findAll().stream()
+                .filter(u -> !u.getUsername().equals(authenticatedUser.getUsername()))
+                .sorted(Comparator.comparingLong(User::getId))
+                .collect(Collectors.toList()));
         return "users/find-all-blocked";
     }
 

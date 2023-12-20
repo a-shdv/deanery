@@ -1,6 +1,8 @@
 package org.university.deanery.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,14 +58,17 @@ public class TeacherController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
+    public String findAll(@RequestParam(required = false, defaultValue = "0") int page,
+                          @RequestParam(required = false, defaultValue = "10") int size,
+                          Model model) {
+        Page<Teacher> teacherPage = teacherService.findAll(PageRequest.of(page, size));
         String success = (String) model.getAttribute("success");
         String error = (String) model.getAttribute("error");
         if (success != null)
             model.addAttribute("message", success);
         if (error != null)
             model.addAttribute("error", error);
-        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("teachers", teacherPage);
         model.addAttribute("subjects", subjectService.findAll());
         return "teachers/find-all";
     }

@@ -1,13 +1,13 @@
 package org.university.deanery.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.university.deanery.dtos.TeacherDto;
-import org.university.deanery.models.Subject;
 import org.university.deanery.models.Teacher;
 import org.university.deanery.models.TeacherSubject;
 import org.university.deanery.repositories.TeacherRepository;
-import org.university.deanery.repositories.TeacherSubjectRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +30,10 @@ public class TeacherService {
 
     public List<Teacher> findAll() {
         return teacherRepository.findAll();
+    }
+
+    public Page<Teacher> findAll(PageRequest pageRequest) {
+        return teacherRepository.findAll(pageRequest);
     }
 
     public Optional<Teacher> findById(Long id) {

@@ -9,6 +9,7 @@
 </head>
 <body>
 <h2>Расписание</h2>
+<a href="/">На главную</a>
 <div th:if="${error}" th:text="${error}" style="color: red"></div>
 <div th:if="${success}" th:text="${success}" style="color: green"></div>
 <main>
@@ -144,7 +145,6 @@
                     <input type="submit" value="Удалить ">
                 </form>
             </td>
-
         </tbody>
     </table>
     <br>

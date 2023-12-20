@@ -12,7 +12,8 @@
     <h2>Заблокированные пользователя</h2>
     <div th:if="${error}" th:text="${error}" style="color: red"></div>
     <div th:if="${warning}" th:text="${warning}" style="color: orange"></div>
-    <table border="1">
+    <div th:if="${#lists.isEmpty(users)}" th:text="'Список пользователей пуст!'" style="color: orange"></div>
+    <table border="1" th:unless="${#lists.isEmpty(users)}">
         <thead>
         <th>ID</th>
         <th>Имя пользователя</th>
